@@ -8,7 +8,7 @@ import Teaching from './pages/Teaching';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="App font-reg">
         <Navbar />
         <main className="container mx-auto mt-4 text-left">
           <Routes>
