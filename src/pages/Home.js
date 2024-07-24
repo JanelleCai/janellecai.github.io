@@ -2,10 +2,10 @@ import React from "react";
 
 function Home() {
   return (
-    <div className="container pt-10 mx-8 space-y-8">
-      <h1 className="text-3xl font-bold">janelle cai</h1>
+    <div className="container mx-auto space-y-8">
       <div className="space-y-4">
-        <h1 className="text-2xl">about me</h1>
+        <h1 className="text-2xl">About Me</h1>
+      {/* <h1 className="text-3xl font-bold">Janelle Cai</h1> */}
         <div className="text-base space-y-1">
           <p>
             I'm an undergraduate at MIT studying computer science. I'm interested in
@@ -22,12 +22,12 @@ function Home() {
             .
           </p>
           <p>
-            In my free time, I enjoy going on runs.
+            In my free time, I enjoy going on runs, journaling, and growing succulents.
           </p>
         </div>
       </div>
       <div className="space-y-4"> 
-        <h1 className="text-2xl">contact</h1>
+        <h1 className="text-2xl">Contact</h1>
         <div className="text-base">
           would love to chat. reach me below.
           <br />
