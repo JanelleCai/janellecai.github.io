@@ -17,3 +17,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.page-header {
+  @apply text-cyan-900 text-2xl;
+}
+
+.navbar-header {
+  @apply text-cyan-900 text-3xl;
+}
+
+.paragraph-link {
+  @apply inline hover:text-cyan-900 text-cyan-600 transition-all;
+}
+
+.button-border{
+  @apply flex justify-center inline-block p-4 border-2 border-slate-200 rounded-lg hover:bg-slate-100 transition-all w-12 h-12;
+}
+
+.button-icon{
+  @apply inline hover:text-slate-900 text-slate-600 transition-all text-xl;
+}
