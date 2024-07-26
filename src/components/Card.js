@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Card({ title, description, links }) {
+function Card({ title, description, skills = [], links = [] }) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xp mb-2">{title}</h2>
-      <p className="text-gray-600 mb-4">{description}</p>
+      
       <div className="flex flex-wrap gap-2">
+        <h2 className="text-xl mb-2">{title}</h2>
         {links.map((link, index) => (
           <a 
             key={index}
@@ -18,6 +18,18 @@ function Card({ title, description, links }) {
           </a>
         ))}
       </div>
+
+      <p className="text-gray-600 mb-4">{description}</p>
+
+      <div className="flex flex-wrap gap-2">
+        {skills.map((skill, index) => (
+          <div 
+            key={index}
+          >
+            <p className="text-base">{skill}</p>
+          </div>
+        ))}
+      </div> 
     </div>
   );
 }

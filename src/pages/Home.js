@@ -11,7 +11,8 @@ function Home() {
         <div className="text-base space-y-1">
           <p>
             I'm an undergraduate at MIT studying computer science. I'm interested in
-            machine learning, robotics, and education.{" "}
+            machine learning, robotics, and education. At MIT, I'm involved in Arcturus, 
+            MIT's competition marine robotics team, and Women in EECS. 
           </p>
           <p>
             This summer, I'm working as a Machine Learning Intern at{" "}
@@ -36,18 +37,20 @@ function Home() {
           </p>
           <p className="flex space-x-4">
             <a
-              className="paragraph-link inline-block p-4 border-2 border-blue-200 rounded-lg hover:bg-blue-100 transition-all aspect-square"
+              className="paragraph-link flex items-center space-x-2"
               href="mailto:jcai18@mit.edu"
             >
               <FontAwesomeIcon icon={faEnvelope} />
+              <span>jcai18@mit.edu</span>
             </a>
-            
-            <a
+          </p>
+          <p className="flex space-x-4">
+            <a  
+              className="paragraph-link flex items-center space-x-2"
               href="https://www.linkedin.com/in/janelle-cai/"
             >
-              <button className="button-border button-icon">
-                <FontAwesomeIcon icon={faLinkedin} />
-              </button>
+              <FontAwesomeIcon icon={faLinkedin} />
+              <span>@janelle-cai</span>
             </a>
           </p>
         </div>
