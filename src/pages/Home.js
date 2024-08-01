@@ -3,35 +3,48 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
+function Link({ text, link }) {
+  return (
+    <a
+      className="paragraph-link"
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {text}
+    </a>
+  );
+} 
+
 function Home() {
   return (
-    <div className="container mx-auto space-y-8">
+    <div className="container mx-auto max-w-3xl space-y-8">
       <div className="space-y-4">
         <h1 className="page-header">About Me</h1>
-        <div className="text-base space-y-1">
+        <div className="text-base space-y-2">
           <p>
-            I'm an undergraduate at MIT studying computer science. I'm interested in
-            machine learning, robotics, and education. At MIT, I'm involved in Arcturus, 
-            MIT's competition marine robotics team, and Women in EECS. 
+            Hello! I'm a sophomore at MIT studying computer science. Some of my current interests 
+            are machine learning and robotics, but I'm always excited to learn new things. I'm 
+            passionate about applying my knowledge to practical problems to make an impact. 
           </p>
           <p>
-            This summer, I'm working as a Machine Learning Intern at{" "}
-            <a
-              className="paragraph-link"
-              href="https://www.ema.co/"
-            >
-              Ema
-            </a>
-            .
+            This summer, I'm working on building LLM agents at{" "}
+            <Link text="Ema" link="https://www.ema.co/"/>. 
+            I'm also researching how we can apply NLP to climate policy in order to better 
+            understand progress toward climate goals. 
+            At MIT, I work on autonomous navigation and perception for {" "}
+            <Link text="Arcturus" link="https://arcturus.mit.edu.com/"/>,
+            our competition marine robotics team.
           </p>
           <p>
-            In my free time, I enjoy going on runs, journaling, and growing succulents.
+            Outside of academics, I enjoy going on runs and growing succulents. I also run 
+            community events for {" "}<Link text="MIT Women in EECS" link="https://wieecs.mit.edu/"/>.
           </p>
         </div>
       </div>
       <div className="space-y-4"> 
         <h1 className="page-header">Contact</h1>
-        <div className="text-base space-y-1">
+        <div className="text-base space-y-2">
           <p>
             I would love to get to know you! Feel free to reach out.
           </p>

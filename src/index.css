@@ -30,10 +30,30 @@ code {
   @apply inline hover:text-cyan-900 text-cyan-600 transition-all;
 }
 
+.card-link {
+  @apply inline hover:text-cyan-900 text-cyan-600 transition-all;
+}
+
 .button-border{
   @apply flex justify-center inline-block p-4 border-2 border-slate-200 rounded-lg hover:bg-slate-100 transition-all w-12 h-12;
 }
 
 .button-icon{
   @apply inline hover:text-slate-900 text-slate-600 transition-all text-xl;
+}
+
+.markdown-content ul {
+  @apply list-disc pl-5 mb-4;
+}
+
+.markdown-content li {
+  @apply mb-2;
+}
+
+.markdown-content p {
+  @apply mb-4;
+}
+
+.markdown-content h1 {
+  @apply mb-4;
 }
