@@ -4,49 +4,48 @@ import Card from '../components/Card';
 function Projects() {
   const projects = [
     {
-      title: "NDC SDG",
-      description: "This is a description of Project 1.",
-      skills: ["Python", "Pandas", "Scikit-learn", "Flask"],
+      title: "Climate Policy Research",
+      description: "climate.md",
+      skills: ["Python", "Large Language Models"],
       links: [
-        { text: "GitHub", url: "https://github.com/" }
+        { text: "Paper", url: "https://openreview.net/pdf?id=c4SgmVTbgD" }
       ]
     },
     {
       title: "Arcturus",
-      description: "This is a description of Project 2.",
-      skills: ["Python", "Pandas", "Scikit-learn", "Flask"],
+      description: "arcturus.md",
+      skills: ["Python", "C++", "ROS2", "OpenCV"],
       links: [
-        { text: "GitHub", url: "https://github.com/" }
+        { text: "GitHub (ROS2)", url: "https://github.com/ArcturusNavigation/all_seaing_vehicle" },
+        { text: "GitHub (MOOS-IvP)", url: "https://github.com/ArcturusNavigation/moos-ivp-arcturus" }
       ]
     },
     {
-      title: "QP Realm",
-      description: "This is a description of Project 2.",
-      skills: ["Python", "Pandas", "Scikit-learn", "Flask"],
-      links: [
-        { text: "GitHub", url: "https://github.com/" }
-      ]
+      title: "Quadratic Programming Controllers",
+      description: "qp.md",
+      skills: ["Python", "JAX"],
+      links: []
     },
     {
       title: "Booksalotl",
-      description: "This is a description of Project 2.",
-      skills: ["Python", "Pandas", "Scikit-learn", "Flask"],
+      description: "booksalotl.md",
+      skills: ["Typescript", "React", "Node.js", "Express", "MongoDB"],
       links: [
-        { text: "GitHub", url: "https://github.com/" }
+        { text: "GitHub", url: "https://github.com/JanelleCai/booksalotl" }
       ]
     },
     {
       title: "Forest Carbon Estimation",
-      description: "This is a description of Project 3.",
-      skills: ["Python", "Pandas", "Scikit-learn", "Flask"],
+      description: "forest.md",
+      skills: ["Python", "Geostatistical Interpolation"],
       links: [
-        { text: "GitHub", url: "https://github.com/" }
+        { text: "GitHub", url: "https://github.com/dawsonc/forest_carbon_estimation" }
       ]
     }
   ];
 
   return (
-    <div className="container mx-auto mt-4 text-left">
+    <div className="container mx-auto max-w-3xl">
       <h1 className="page-header mb-6">Projects</h1>
       <div className="grid grid-cols-1 gap-4">
         {projects.map((project, index) => (
