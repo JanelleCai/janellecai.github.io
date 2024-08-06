@@ -8,7 +8,8 @@ function Projects() {
       description: "climate.md",
       skills: ["Python", "Large Language Models"],
       links: [
-        { text: "Paper", url: "https://openreview.net/pdf?id=c4SgmVTbgD" }
+        { text: "Paper", url: "https://openreview.net/pdf?id=c4SgmVTbgD" },
+        { text: "Poster", url: "/projects/climasdg_poster.pdf" }
       ]
     },
     {
@@ -37,7 +38,7 @@ function Projects() {
     {
       title: "Forest Carbon Estimation",
       description: "forest.md",
-      skills: ["Python", "Geostatistical Interpolation"],
+      skills: ["Python", "Geostatistical Modeling"],
       links: [
         { text: "GitHub", url: "https://github.com/dawsonc/forest_carbon_estimation" }
       ]
