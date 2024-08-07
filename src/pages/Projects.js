@@ -9,7 +9,7 @@ function Projects() {
       skills: ["Python", "Large Language Models"],
       links: [
         { text: "Paper", url: "https://openreview.net/pdf?id=c4SgmVTbgD" },
-        { text: "Poster", url: "/projects/climasdg_poster.pdf" }
+        { text: "Poster", url: "/projects/climatenlp.pdf" }
       ]
     },
     {
