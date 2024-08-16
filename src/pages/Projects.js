@@ -6,9 +6,9 @@ function Projects() {
     {
       title: "Climate Policy Research",
       description: "climate.md",
-      skills: ["Python", "Large Language Models"],
+      skills: ["Python", "Natural Language Processing"],
       links: [
-        { text: "Paper", url: "https://openreview.net/pdf?id=c4SgmVTbgD" },
+        { text: "Paper", url: "https://aclanthology.org/2024.climatenlp-1.17/" },
         { text: "Poster", url: "/projects/climatenlp.pdf" }
       ]
     },
@@ -46,18 +46,20 @@ function Projects() {
   ];
 
   return (
-    <div className="container mx-auto max-w-3xl">
-      <h1 className="page-header mb-6">Projects</h1>
-      <div className="grid grid-cols-1 gap-4">
-        {projects.map((project, index) => (
-          <Card
-            key={index}
-            title={project.title}
-            description={project.description}
-            links={project.links}
-            skills={project.skills}
-          />
-        ))}
+    <div className="px-8">
+      <div className="container mx-auto max-w-3xl">
+        <h1 className="page-header mb-6">Projects</h1>
+        <div className="grid grid-cols-1 gap-4">
+          {projects.map((project, index) => (
+            <Card
+              key={index}
+              title={project.title}
+              description={project.description}
+              links={project.links}
+              skills={project.skills}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
