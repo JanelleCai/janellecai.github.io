@@ -17,8 +17,8 @@ function Projects() {
       description: "arcturus.md",
       skills: ["Python", "C++", "ROS2", "OpenCV"],
       links: [
-        { text: "GitHub (ROS2)", url: "https://github.com/ArcturusNavigation/all_seaing_vehicle" },
-        { text: "GitHub (MOOS-IvP)", url: "https://github.com/ArcturusNavigation/moos-ivp-arcturus" }
+        { text: "GitHub (ROS)", url: "https://github.com/ArcturusNavigation/all_seaing_vehicle" },
+        { text: "GitHub (MOOS)", url: "https://github.com/ArcturusNavigation/moos-ivp-arcturus" }
       ]
     },
     {
