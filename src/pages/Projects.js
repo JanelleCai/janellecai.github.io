@@ -46,7 +46,7 @@ function Projects() {
   ];
 
   return (
-    <div className="px-8">
+    <div className="px-8 pb-8">
       <div className="container mx-auto max-w-3xl">
         <h1 className="page-header mb-6">Projects</h1>
         <div className="grid grid-cols-1 gap-4">

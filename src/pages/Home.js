@@ -18,7 +18,7 @@ function Link({ text, link }) {
 
 function Home() {
   return (
-    <div className="px-8">
+    <div className="px-8 pb-8">
       <div className="container mx-auto max-w-3xl space-y-8">
         <div className="space-y-4">
           <h1 className="page-header">About Me</h1>
