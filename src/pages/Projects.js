@@ -4,12 +4,11 @@ import Card from '../components/Card';
 function Projects() {
   const projects = [
     {
-      title: "Climate Policy Research",
-      description: "climate.md",
-      skills: ["Python", "Natural Language Processing"],
+      title: "Meta-Learning Across Domains",
+      description: "meta.md",
+      skills: ["Python", "PyTorch"],
       links: [
-        { text: "Paper", url: "https://aclanthology.org/2024.climatenlp-1.17/" },
-        { text: "Poster", url: "/projects/climatenlp.pdf" }
+        { text: "Blog", url: "/projects/meta/meta.html" }
       ]
     },
     {
@@ -17,8 +16,16 @@ function Projects() {
       description: "arcturus.md",
       skills: ["Python", "C++", "ROS2", "OpenCV"],
       links: [
-        { text: "GitHub (ROS)", url: "https://github.com/ArcturusNavigation/all_seaing_vehicle" },
-        { text: "GitHub (MOOS)", url: "https://github.com/ArcturusNavigation/moos-ivp-arcturus" }
+        { text: "GitHub", url: "https://github.com/ArcturusNavigation/all_seaing_vehicle" },
+      ]
+    },
+    {
+      title: "Climate Policy Research",
+      description: "climate.md",
+      skills: ["Python", "Natural Language Processing"],
+      links: [
+        { text: "Paper", url: "https://aclanthology.org/2024.climatenlp-1.17/" },
+        { text: "Poster", url: "/projects/climatenlp.pdf" }
       ]
     },
     {

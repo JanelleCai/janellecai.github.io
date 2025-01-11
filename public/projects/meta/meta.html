@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learning to Learn Across Domains</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
+    </script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)'], ['$', '$']],
+                displayMath: [['$$', '$$']],
+                macros: {
+                    argmin: ["\\mathop{\\operatorname{argmin}}\\limits", 0],
+                }
+            }
+        };
+    </script>
+</head>
+<body>
+<h1>Learning to Learn Across Domains</h1>
+<div class="header-container">
+    <div>Janelle Cai and Adam Zweiger</div>
+    <div>December 10, 2024</div>
+</div>
+<hr>
+<h2>Introduction</h2>
+<p>Humans excel at learning new concepts from a very small number of examples. For instance, we can recognize a previously unseen handwritten character or identify a novel object category after just one or two glimpses. <strong>Meta-learning</strong> aims to equip machine learning models with this strong few-shot learning capability, enabling rapid adaptation to new tasks using minimal data.</p>
+<p>Among various meta-learning approaches—model-based, metric-based, and optimization-based—<strong>Model Agnostic Meta-Learning (MAML)</strong><span id="inline1"></span> <a href="#ref1">(Finn et al., 2017)</a> has emerged as a particularly influential method. MAML treats meta-learning as a bilevel optimization problem, learning parameters that can be quickly fine-tuned to new tasks. Building on MAML, two variants of its variants <strong>ANIL</strong><span id="inline2a"></span> <a href="#ref2">(Raghu et al., 2020)</a> and <strong>BOIL</strong><span id="inline3a"></span> <a href="#ref3">(Oh et al., 2021)</a> have explored whether performance hinges on reusing representations or rapidly learning them.</p>
+<p>In this post, we examine these methods in depth, look at how different layers of a model contribute to adaptation, explain why ANIL and BOIL work well, and introduce a simple modification that often outperforms existing approaches. We evaluate generalization among these models across varying domain gaps on the Omniglot<span id="inline4"></span> <a href="#ref4">(Lake et al., 2015)</a>, Mini-ImageNet<span id="inline5"></span> <a href="#ref5">(Vinyals et al., 2016)</a>, and ImageNet-Sketch<span id="inline6"></span> <a href="#ref6">(Wang et al., 2019)</a> datasets, and discuss the enduring debate between feature reuse and rapid representation change.</p>
+<h3>What is MAML?</h3>
+<p>
+    The goal of MAML is to learn a set of parameters $\theta$ that can quickly adapt to a distribution of tasks $\tau$, including tasks never seen before. Each task $\tau$ has a small training set $\tau_{\text{train}}$ and a test set $\tau_{\text{test}}$.
+</p>
+<p>
+    MAML seeks to minimize the loss over tasks from some distribution $p(\tau)$, where the loss on $\tau_{\text{test}}$ is computed after training $\theta$ on $\tau_{\text{train}}$:
+</p>
+<p>
+    $$ 
+    \argmin_{\theta}\,\mathbb{E}_{\tau \sim p(\tau)} \left[ \mathcal{L}(\theta; \tau_{\text{train}}, \tau_{\text{test}}) \right].
+    $$
+</p>
+<p>
+    For each task $\tau \sim p(\tau)$, the model computes task-specific parameters $\theta_\tau'$ via one or more gradient steps on $\tau_{\text{train}}$:
+</p>
+<p>
+    $$ 
+    \theta_\tau' = \theta - \alpha \nabla_\theta \mathcal{L}(\theta; \tau_{\text{train}}),
+    $$
+</p>
+<p>
+    where $\alpha$ is the inner loop learning rate. The meta-objective then updates $\theta$ using the performance of $\theta_\tau'$ on $\tau_{\text{test}}$:
+</p>
+<p>
+    $$ 
+    \theta \leftarrow \theta - \beta \nabla_\theta \mathbb{E}_{\tau \sim p(\tau)} \left[ \mathcal{L}(\theta_\tau'; \tau_{\text{test}}) \right],
+    $$
+</p>
+<p>
+    where $\beta$ is the outer loop learning rate. Through this two-level optimization, which involves second-order gradients, MAML is trained globally to enable fast adaptation locally.
+</p>
+<h3>Representation Change vs. Representation Reuse</h3>
+<p>The authors of <strong>ANIL</strong> (Almost No Inner Loop)<span id="inline2b"></span> <a href="#ref2">(Raghu et al., 2020)</a> made an interesting discovery: by using <strong>Centered Kernel Alignment (CKA)</strong><span id="inline7"></span> <a href="#ref7">(Kornblith et al., 2019)</a>—a method to measure similarity between neural network representations—they found that MAML's adaptation primarily occurs in the final layer of the network. Representations in earlier layers remain relatively unchanged, indicating that MAML's success largely comes from <strong>representation reuse</strong> rather than deep representation change. Motivated by this, ANIL simplifies MAML by freezing all but the last layer during the inner loop, yielding comparable performance. In other words, simply re-tuning the head on top of a stable body of features is sufficient.</p>
+<p>The authors of <strong>BOIL</strong> (Body-Only Inner Loop)<span id="inline3b"></span> <a href="#ref3">(Oh et al., 2021)</a> see this discovery and take the opposite perspective. They have the insight that this last-layer-only adaptation in MAML might not be desirable. Instead, they propose BOIL, which freezes only the final layer during the inner loop and allows deeper (earlier) layers to update. This encourages more substantial representation changes beyond just the final classifier layer, and ends up outperforming both MAML and ANIL, especially on tasks with large domain shifts. The takeaway from BOIL is that there are performance gains from <em>preventing</em> the model from relying on feature reuse, and that feature reuse alone is insufficient for strong meta-learning.</p>
+<p>However, this raises new questions. Does preventing changes to the head layer merely push adaptation into the penultimate layer, rather than truly distributing it more widely? If so, is the penultimate layer truly optimal for adaptation, or can we do better with some other configuration of freezing layers? Do larger domain shifts necessitate inner-loop updates deeper in the network?</p>
+<h2>Methods and Experiments</h2>
+<p>To investigate some of these questions, we conducted a series of experiments to understand how different layers and different domain shifts in the data influence task performance.</p>
+<h3>Model Architecture</h3>
+<p>The experiments from the MAML, BOIL, and ANIL papers used the <strong>Conv4</strong> architecture in their experiments. Conv4 is a CNN with four convolutional layers that include max pooling, followed by a single layer fully-connected classifier head. To explore whether the penultimate layer (last convolutional layer) has unique significance, we also conducted experiments with a Conv6 architecture, which has six convolutional layers instead of four.</p>
+<div class="image-container">
+    <img src="./images/conv.png" alt="Conv4 Architecture" style="max-width: 90%;">
+    <em>Figure 1: Visualization of the Conv4 architecture.</em>
+</div>
+<h3>Datasets</h3>
+<p>We utilized a variety of datasets to test both within-domain and cross-domain generalization capabilities:</p>
+<ul>
+<li><strong>Omniglot:</strong> A dataset of 1,623 handwritten black-and-white characters from 50 different alphabets with 20 examples per character. Dubbed the “transpose” of MNIST.</li>
+<li><strong>Mini-ImageNet:</strong> A smaller subset of the ImageNet database, consisting of 50,000 color images across 100 classes.</li>
+<li><strong>ImageNet-Sketch:</strong> A sketch-based variant of ImageNet containing 50,000 images across 1,000 classes. These images, sourced from Google, feature sketch-like representations of objects. While primarily black-and-white, some images include a bit of color from their original source.</li>
+</ul>
+<div class="image-container">
+    <img src="./images/data.png" alt="Datasets">
+    <em style="display: block; max-width: 85%; margin: 0px auto; text-align: center;">Figure 2: Visualization of 5-way 5-shot classification examples from Omniglot, Mini-ImageNet, and ImageNet-Sketch.</em>
+</div>
+<h3>Cross-Domain Evaluation</h3>
+<p>For cross-domain evaluation, we meta-trained models on one dataset and meta-tested them on classes in a different dataset. We examined two scenarios:</p>
+<ol>
+<li>
+<p><strong>Train: Mini-ImageNet, Test: Omniglot:</strong> This setup evaluates how well models handle significant domain shifts. The test classes consist of black-and-white drawn characters, which are vastly out of distribution from the object recognition tasks in Mini-ImageNet.</p>
+</li>
+<li>
+<p><strong>Train: ImageNet-Sketch, Test: Mini-ImageNet:</strong> Here, the datasets share a common foundation as both are derived from ImageNet. This scenario assesses the models' capacity to generalize from simplified visual representations (sketches) to fully detailed images, potentially demonstrating practical utility in settings where collecting high-quality data is difficult.</p>
+</li>
+</ol>
+<h2>Layer-Wise Task Adaptation: The Neglected Role of Mid-Level Layers</h2>
+<p>Both ANIL and BOIL use CKA analysis to pinpoint at what layer representation change begins to occur in a network. From a plot of representation-similarity before and after inner-loop adaptation, we see that MAML and ANIL display a clear pattern of feature reuse up until the final layer, which is the only layer with a significant difference in CKA similarity. Meanwhile, BOIL also shows feature reuse, but only until the penultimate layer, where representation change begins.</p>
+<div class="image-container">
+    <img src="./images/CKA.png" alt="CKA Analysis" style="max-width: 50%;">
+    <em style="display: block; max-width: 85%; margin: 0px auto; text-align: center;">Figure 3: A CKA plot of MAML, ANIL, and BOIL on the standard Conv4 architecture (4 convolutional layers plus a linear classifier). Source image: (Oh et al., 2021)</em>
+</div>
+<p>This raises a natural question: Is the penultimate layer truly special, or can we do better with the same trick that BOIL applied to MAML of freezing even more layers?</p>
+<p>
+  To answer this, we ran a series of experiments using MAML-like architectures on the standard Conv4 architecture and the deeper Conv6 network. For an $N$-layer network, we created single-active-layer variants $\text{MAML}_i$ (for $i \in \{1, \dots, N\}$) that allow only the $i$-th layer to adapt in the inner loop while the rest remain frozen.
+</p>
+<h3>Results</h3>
+<p>The table below shows the performance of single-active-layer variants for the Conv4 model across each task:</p>
+<p style="display: flex; justify-content: center; transform: scale(0.75);">
+\begin{array}{|l|c|c|c|c|c|}
+\hline
+\textbf{Task} & \textbf{conv1} & \textbf{conv2} & \textbf{conv3} & \textbf{conv4} & \textbf{head} \\ \hline
+\text{Omniglot (5-way 5-shot)} & 94.08 & 98.04 & 99.63 & \mathbf{99.79} & 96.13 \\ \hline
+\text{Omniglot (20-way 1-shot)} & 9.07 & 64.94 & 91.36 & \mathbf{93.88} & 87.76 \\ \hline
+\text{Mini-ImageNet} & 41.38 & 51.25 & 58.65 & \mathbf{62.53} & 58.77 \\ \hline
+\text{ImageNet-Sketch} & 40.63 & 56.90 & 63.65 & \mathbf{68.38} & 65.02 \\ \hline
+\text{Cross-Domain (Mini to Omni)} & 55.60 & 66.90 & 78.78 & \mathbf{81.98} & 52.27 \\ \hline
+\text{Cross-Domain (Sketch to Mini)} & 29.57 & 39.35 & 46.30 & \mathbf{46.38} & 43.38 \\ \hline
+\end{array}
+</p>
+<p>We compared the best-performing single-active-layer model for Conv4 with MAML, ANIL, and BOIL:</p>
+<p style="display: flex; justify-content: center; transform: scale(0.75);">
+\begin{array}{|l|c|c|c|c|}
+\hline
+\textbf{Algorithm (active layers)} & \textbf{MAML (all)} & \textbf{ANIL (head)} & \textbf{BOIL (non-head)} & \textbf{Single Active Layer} \\ \hline
+\text{Omniglot (5-way 5-shot)} & 98.27 & 96.13 & 99.47 & \mathbf{99.79} \\ \hline
+\text{Omniglot (20-way 1-shot)} & 92.35 & 87.76 & \mathbf{93.92} & \mathbf{93.92} \\ \hline
+\text{Mini-ImageNet} & 62.39 & 58.77 & 61.50 & \mathbf{62.53} \\ \hline
+\text{ImageNet-Sketch} & 70.18 & 63.80 & \mathbf{68.38} & \mathbf{68.38} \\ \hline
+\text{Cross-Domain (Mini to Omni)} & 82.29 & \textit{52.27} & \mathbf{88.35} & 81.98 \\ \hline
+\text{Cross-Domain (Sketch to Mini)} & \mathbf{51.20} & 39.08 & 50.65 & 46.38 \\ \hline
+\end{array}
+</p>
+<p>Next, we extended these experiments to the deeper Conv6 network, which includes six convolutional layers and a linear classifier. The performance of each single-active-layer model is shown below:</p>
+<p style="display: flex; justify-content: center; transform: scale(0.75);">
+\begin{array}{|l|c|c|c|c|c|c|c|}
+\hline
+\textbf{Task} & \textbf{conv1} & \textbf{conv2} & \textbf{conv3} & \textbf{conv4} & \textbf{conv5} & \textbf{conv6} & \textbf{head} \\ \hline
+\text{Mini-ImageNet} & 38.80 & 52.82 & 59.40 & 63.65 & \mathbf{66.43} & 63.10 & 59.10 \\ \hline
+\text{ImageNet-Sketch} & 41.13 & 58.91 & 67.76 & 74.90 & \mathbf{77.24} & 76.20 & 71.37 \\ \hline
+\text{Cross-Domain (Mini to Omni)} & 45.88 & 61.95 & 74.00 & 86.30 & \mathbf{95.83} & 90.30 & 64.63 \\ \hline
+\text{Cross-Domain (Sketch to Mini)} & 29.41 & 43.16 & 48.66 & 52.52 & \mathbf{53.34} & 52.49 & 48.91 \\ \hline
+\end{array}
+</p>
+<p>Similarly, we compared the best-performing single-active-layer model for Conv6 with existing methods:</p>
+<p style="display: flex; justify-content: center; transform: scale(0.75);">
+\begin{array}{|l|c|c|c|c|}
+\hline
+\textbf{Algorithm (active layers)} & \textbf{MAML (all)} & \textbf{ANIL (head)} & \textbf{BOIL (non-head)} & \textbf{Single Active Layer} \\ \hline
+\text{Mini-ImageNet} & 61.75 & 59.10 & 65.23 & \mathbf{66.43} \\ \hline
+\text{ImageNet-Sketch} & 75.81 & 70.72 & 73.63 & \mathbf{77.24} \\ \hline
+\text{Cross-Domain (Mini to Omni)} & 92.70 & \textit{64.63} & 93.05 & \mathbf{95.83} \\ \hline
+\text{Cross-Domain (Sketch to Mini)} & \mathbf{54.83} & 47.99 & 53.59 & 53.34 \\ \hline
+\end{array}
+</p>
+<h3>Key Insights</h3>
+<p>Our findings show that among single-active-layer models, allowing adaptation in <strong>middle-to-late convolutional layers</strong> is optimal, and that this method marginally outperforms MAML, ANIL, and BOIL. While we did observe that freezing all but the penultimate layer was best in the 5-layer Conv4 architecture, we did not find this to be the case in general. In the deeper 7-layer Conv6 architecture, we found the 5th convolutional layer was most effective to adapt.</p>
+<p>It seems that these mid-to-late layer features strike a balance: they provide richer, task-agnostic representations than the earliest layers (which capture very generic patterns) and are more adaptable than the topmost layers (which often encode task-specific distinctions).</p>
+<p>In the results displayed above, we not only show the ability of models to adapt across different classes within a single dataset, but also show the ability of models to adapt across large domain shifts between datasets. Specifically, we meta-train models on  <strong>Mini-ImageNet</strong> and test on classes in <strong>Omniglot</strong>, and meta-train models on <strong>ImageNet-Sketch</strong> and test on classes in <strong>Mini-ImageNet</strong>. While vanilla meta-learning within any particular dataset such as Omniglot or Mini-ImageNet also involves learning to learn tasks never seen before, these two domain shifts are much larger. The classes in ImageNet-Sketch are well out of distribution of the images in Mini-ImageNet, which are also well out of distribution of the characters in Omniglot. In fact, we even had to resize images from the dataset being meta-tested on in order to feed them into our models.</p>
+<p>ANIL performed particularly poorly on cross-domain tasks, with a mere 64.63% accuracy with a Conv6 architecture when transfering from Mini-ImageNet to Omniglot compared to MAML's 92.70% and our single-active-layer model's 95.83%. While ANIL almost matched MAML on most in-domain tasks, its performance dropped considerably when confronted with large domain shifts. BOIL and our single-active-layer models perform well on both in-domain and cross-domain tasks.</p>
+<p>This finding aligns with BOIL's intent to encourage representation change. Yet, our results suggest that BOIL's gains come from restricting the head rather than inherently promoting representation transformation where it would be best. The CKA analysis showed us that BOIL mainly displays representation change in the penultimate layer. However, in deeper networks, simply choosing a single layer a bit earlier in the network to adapt often achieved better performance.</p>
+<h2>Discussion and Future Directions</h2>
+<p>Among meta-learning methods focused on representation reuse, it has been shown that more straightforward methods than MAML and ANIL can achieve superior performance. Specifically, <span id="inline10"></span> <a href="#ref10">(Tian et al., 2020)</a> train an embedding model with vanilla classification on the meta-train set, remove the model's head, and utilize the body to generate representations. Subsequently, a linear classifier is learned during meta-testing. This approach is able to more directly employ representation reuse and surpass MAML and ANIL on Mini-ImageNet without bilevel optimization.</p>
+<p>This leads us to believe that further work in gradient-based meta-learning methods should instead aim to explore ways to rapidly change mid-layer representations—something other types of methods are not so easily able to do. BOIL<span id="inline3c"></span> <a href="#ref3">(Oh et al., 2021)</a> claims their method is closer to the ultimate goal of meta-learning, which is domain-agnostic adaptation—the ability to learn to learn across a large domain gap. Our experiments confirm this claim through experiments on large domain gaps, yet show that BOIL <em>still</em> does not inherently solve the problem of prioritizing representation change. The success in larger networks of simply freezing all but a carefully chosen mid-layer suggests that there's untapped potential in steering adaptation to richer, more transferable representations found at intermediate layers.</p>
+<p>Moving forward, we would like to see the development of meta-learning methods that favor adaptive mid-level feature transformations inherently, rather than by manual restrictions such as those done in ANIL, BOIL, or this work. Such an approach could produce better domain-agnostic few-shot learners that generalize more gracefully across tasks and domains.</p>
+<p>A final point that we would like to mention is how gradient-based meta-learning approaches might be scaled to transformers. During our project, we additionally ran experiments with meta-learning using vision transformers<span id="inline8"></span> <a href="#ref8">(Dosovitskiy et al., 2021)</a> to see if performance could be improved on our chosen benchmarks. We ran experiments not only with the techniques mentioned, but also by applying <strong>LoRA</strong><span id="inline9"></span> <a href="#ref9">(Hu et al., 2022a)</a> during the inner loop. The intuition is that task-level fine-tuning might only need to learn a low-rank alteration of the original model, and that constricting the gradient update to be low-rank would improve performance, just as constricting the last layer improved performance from MAML to BOIL.</p>
+<p>However, we found that vision transformers consistently underperformed CNNs in their ability to meta-learn when trained from scratch, and that LoRA did not improve performance over full fine-tuning. It seems that even though massively pre-trained vision transformers beat CNNs, they are suboptimal for small-scale meta-training. While the current state of the art in meta-learning <em>with</em> external data, <strong>P&gt;M&gt;F</strong><span id="inline11"></span> <a href="#ref11">(Hu et al., 2022b)</a>, uses a pipeline of pretraining foundation models, meta-training, and then fine-tuning, we believe that the inductive bias of CNNs wins out over vision transformers for small-scale meta-training without external data.</p>
+<h2>Conclusion</h2>
+<p>Our results show that <strong>mid-level layers</strong> are neglected by current gradient-based meta-learning methods, and that representation change in these layers is often beneficial for better cross-task performance. Our experiments confirm that BOIL's improvements stem from restricting adaptations at the final layer, forcing deeper layer changes. Similarly, the success of simply freezing all but a carefully chosen layer in the middle-to-late stages of larger networks suggests that there's untapped potential in steering adaptation to richer, more transferable representations found in intermediate layers.</p>
+<p>Our experiments across large domain gaps, such as meta-training on ImageNet-Sketch classes and testing on Mini-ImageNet, show ambiguity in determining which method performs best. Across four large-domain-gap experiments on networks of varying sizes, MAML, BOIL, and our single-active-layer models each demonstrated scenarios where they beat the other methods, showing that the trade-off between representation change and feature reuse remains very context-dependent.</p>
+<p>Finally, while transformers have shown promise in meta-learning after undergoing large-scale pretraining, CNNs remain better suited for small-scale meta-training tasks without external data. We believe future research should focus on developing methods that inherently induce representation change at mid-level layers, potentially unlocking more robust and domain-agnostic few-shot learners that are scalable to larger networks.</p>
+<h2>References</h2>
+<p><a id="ref1"></a>1. Chelsea Finn, Pieter Abbeel, Sergey Levine (2017). <em>Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks</em>. ICML. <a href="https://proceedings.mlr.press/v70/finn17a.html">Link</a> <a href="#inline1">↩</a> <br><br>
+<a id="ref2"></a>2. Aniruddh Raghu, Maithra Raghu, Samy Bengio, Oriol Vinyals (2020). <em>Rapid Learning or Feature Reuse? Towards Understanding the Effectiveness of MAML</em>. ICLR. <a href="https://openreview.net/forum?id=rkgMkCEtPB">Link</a> <a href="#inline2a">↩</a> <a href="#inline2b">↩</a> <br><br>
+<a id="ref3"></a>3. Jaehoon Oh, Hyungjun Yoo, ChangHwan Kim, Se-Young Yun (2021). <em>BOIL: Towards Representation Change for Few-shot Learning</em>. ICLR. <a href="https://openreview.net/forum?id=umIdUL8rMH">Link</a> <a href="#inline3a">↩</a> <a href="#inline3b">↩</a> <a href="#inline3c">↩</a> <br><br>
+<a id="ref4"></a>4. Brenden M. Lake, Ruslan Salakhutdinov, Joshua B. Tenenbaum (2015). <em>Human-level concept learning through probabilistic program induction</em>. Science. <a href="https://www.cs.cmu.edu/~rsalakhu/papers/LakeEtAl2015Science.pdf">Link</a> <a href="#inline4">↩</a> <br><br>
+<a id="ref5"></a>5. Oriol Vinyals, Charles Blundell, Timothy Lillicrap, Koray Kavukcuoglu, Daan Wierstra (2016). <em>Matching Networks for One Shot Learning</em>. NeurIPS. <a href="https://proceedings.neurips.cc/paper_files/paper/2016/file/90e1357833654983612fb05e3ec9148c-Paper.pdf">Link</a> <a href="#inline5">↩</a> <br><br>
+<a id="ref6"></a>6. Haohan Wang, Songwei Ge, Zachary Lipton, Eric P. Xing (2019). <em>Learning Robust Global Representations by Penalizing Local Predictive Power</em>. NeurIPS. <a href="https://proceedings.neurips.cc/paper/2019/hash/3eefceb8087e964f89c2d59e8a249915-Abstract.html">Link</a> <a href="#inline6">↩</a> <br><br>
+<a id="ref7"></a>7. Simon Kornblith, Mohammad Norouzi, Honglak Lee, Geoffrey Hinton (2019). <em>Similarity of Neural Network Representations Revisited</em>. ICML. <a href="https://proceedings.mlr.press/v97/kornblith19a.html">Link</a> <a href="#inline7">↩</a> <br><br>
+<a id="ref8"></a>8. Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, Neil Houlsby (2021). <em>An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale</em>. ICLR. <a href="https://openreview.net/forum?id=YicbFdNTTy">Link</a> <a href="#inline8">↩</a> <br><br>
+<a id="ref9"></a>9. Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, Weizhu Chen (2022). <em>LoRA: Low-Rank Adaptation of Large Language Models</em>. ICLR. <a href="https://openreview.net/forum?id=nZeVKeeFYf9">Link</a> <a href="#inline9">↩</a> <br><br>
+<a id="ref10"></a>10. Yonglong Tian, Yue Wang, Dilip Krishnan, Joshua B. Tenenbaum, Phillip Isola (2020). <em>Rethinking Few-shot Image Classification: A Good Embedding is All You Need?</em>. ECCV. <a href="https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123590256.pdf">Link</a> <a href="#inline10">↩</a> <br><br>
+<a id="ref11"></a>11. Shell Xu Hu, Da Li, Jan Stühmer, Minyoung Kim, Timothy M. Hospedales (2022). <em>Pushing the Limits of Simple Pipelines for Few-Shot Learning: External Data and Fine-Tuning Make a Difference</em>. CVPR. <a href="https://openaccess.thecvf.com/content/CVPR2022/papers/Hu_Pushing_the_Limits_of_Simple_Pipelines_for_Few-Shot_Learning_External_CVPR_2022_paper.pdf">Link</a> <a href="#inline11">↩</a></p>
