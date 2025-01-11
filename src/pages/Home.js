@@ -29,16 +29,16 @@ function Home() {
               passionate about applying my knowledge to practical problems to make an impact. 
             </p>
             <p>
-              This summer, I'm working on building LLM agents at{" "}
+              In the past, I researched model routing and improved LLM agents at{" "}
               <Link text="Ema" link="https://www.ema.co/"/>. 
-              I'm also researching how we can apply NLP to climate policy in order to better 
+              I worked on research on how NLP can be applied to climate policy in order to better 
               understand progress toward climate goals. 
               At MIT, I work on autonomous navigation and perception for {" "}
               <Link text="Arcturus" link="https://arcturus.mit.edu.com/"/>,
               our competition marine robotics team.
             </p>
             <p>
-              Outside of academics, I enjoy going on runs and growing succulents. I also run 
+              Outside of academics, I enjoy reading, going on runs, and growing succulents. I also run 
               community events for {" "}<Link text="MIT Women in EECS" link="https://wieecs.mit.edu/"/>.
             </p>
           </div>
