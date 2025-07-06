@@ -1,0 +1,1196 @@
+<html>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<style type="text/css">
+		body {
+			background-color: #f5f9ff;
+		}
+
+		/* Hide both math displays initially, will display based on JS detection */
+		.mathjax-mobile,
+		.mathml-non-mobile {
+			display: none;
+		}
+
+		/* Show the MathML content by default on non-mobile devices */
+		.show-mathml .mathml-non-mobile {
+			display: block;
+		}
+
+		.show-mathjax .mathjax-mobile {
+			display: block;
+		}
+
+		.content-margin-container {
+			display: flex;
+			width: 100%;
+			/* Ensure the container is full width */
+			justify-content: left;
+			/* Horizontally centers the children in the container */
+			align-items: center;
+			/* Vertically centers the children in the container */
+		}
+
+		.main-content-block {
+			width: 65%;
+			/* Change this percentage as needed */
+			max-width: 1100px;
+			/* Optional: Maximum width */
+			background-color: #fff;
+			border-left: 1px solid #DDD;
+			border-right: 1px solid #DDD;
+			padding: 8px 8px 8px 8px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+		}
+
+		.margin-left-block {
+			font-size: 14px;
+			width: 20%;
+			/* Change this percentage as needed */
+			max-width: 200px;
+			/* Optional: Maximum width */
+			position: relative;
+			margin-left: 10px;
+			text-align: left;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			padding: 5px;
+		}
+
+		.margin-right-block {
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			font-size: 14px;
+			width: 25%;
+			/* Change this percentage as needed */
+			max-width: 256px;
+			/* Optional: Maximum width */
+			position: relative;
+			text-align: left;
+			padding: 10px;
+			/* Optional: Adds padding inside the caption */
+		}
+
+		img {
+			max-width: 100%;
+			/* Make sure it fits inside the container */
+			height: auto;
+			display: block;
+			margin: auto;
+		}
+
+		.my-video {
+			max-width: 100%;
+			/* Make sure it fits inside the container */
+			height: auto;
+			display: block;
+			margin: auto;
+		}
+
+		/* Hide both video displays initially, will display based on JS detection */
+		.vid-mobile,
+		.vid-non-mobile {
+			display: none;
+		}
+
+		/* Show the video content by default on non-mobile devices */
+		.show-vid-mobile .vid-mobile {
+			display: block;
+		}
+
+		.show-vid-non-mobile .vid-non-mobile {
+			display: block;
+		}
+
+		a:link,
+		a:visited {
+			color: #0e7862;
+			/*#1367a7;*/
+			text-decoration: none;
+		}
+
+		a:hover {
+			color: #24b597;
+			/*#208799;*/
+		}
+
+		h1 {
+			font-size: 24px;
+			margin-top: 4px;
+			margin-bottom: 10px;
+		}
+
+		h2 {
+			font-size: 18px;
+			margin-top: 4px;
+			margin-bottom: 10px;
+		}
+
+		table.header {
+			font-weight: 300;
+			font-size: 17px;
+			flex-grow: 1;
+			width: 100%;
+			max-width: none;
+		}
+
+		table td,
+		table td * {
+			vertical-align: middle;
+			position: relative;
+		}
+
+		table.paper-code-tab {
+			flex-shrink: 0;
+			margin-left: 8px;
+			margin-top: 8px;
+			padding: 0px 0px 0px 8px;
+			width: 290px;
+			height: 150px;
+		}
+
+		.layered-paper {
+			/* modified from: http://css-tricks.com/snippets/css/layered-paper/ */
+			box-shadow:
+				0px 0px 1px 1px rgba(0, 0, 0, 0.35),
+				/* The top layer shadow */
+				5px 5px 0 0px #fff,
+				/* The second layer */
+				5px 5px 1px 1px rgba(0, 0, 0, 0.35),
+				/* The second layer shadow */
+				10px 10px 0 0px #fff,
+				/* The third layer */
+				10px 10px 1px 1px rgba(0, 0, 0, 0.35);
+			/* The third layer shadow */
+			margin-top: 5px;
+			margin-left: 10px;
+			margin-right: 30px;
+			margin-bottom: 5px;
+		}
+
+		hr {
+			height: 1px;
+			/* Sets the height of the line to 1 pixel */
+			border: none;
+			/* Removes the default border */
+			background-color: #DDD;
+			/* Sets the line color to black */
+		}
+
+		div.hypothesis {
+			width: 80%;
+			background-color: #EEE;
+			border: 1px solid black;
+			border-radius: 10px;
+			-moz-border-radius: 10px;
+			-webkit-border-radius: 10px;
+			font-family: Courier;
+			font-size: 18px;
+			text-align: center;
+			margin: auto;
+			padding: 16px 16px 16px 16px;
+		}
+
+		div.citation {
+			font-size: 0.8em;
+			background-color: #fff;
+			padding: 10px;
+			height: 200px;
+		}
+
+		.fade-in-inline {
+			position: absolute;
+			text-align: center;
+			margin: auto;
+			-webkit-mask-image: linear-gradient(to right,
+					transparent 0%,
+					transparent 40%,
+					black 50%,
+					black 90%,
+					transparent 100%);
+			mask-image: linear-gradient(to right,
+					transparent 0%,
+					transparent 40%,
+					black 50%,
+					black 90%,
+					transparent 100%);
+			-webkit-mask-size: 8000% 100%;
+			mask-size: 8000% 100%;
+			animation-name: sweepMask;
+			animation-duration: 4s;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+			animation-delay: -1s;
+		}
+
+		.fade-in2-inline {
+			animation-delay: 1s;
+		}
+
+		.inline-div {
+			position: relative;
+			display: inline-block;
+			/* Makes both the div and paragraph inline-block elements */
+			vertical-align: top;
+			/* Aligns them at the top, you can adjust this to middle, bottom, etc., based on your needs */
+			width: 50px;
+			/* Optional: Adds space between the div and the paragraph */
+		}
+	</style>
+
+	<title>Self-supervised SE(3)-invariant image embeddings</title>
+	<meta property="og:title" content="Self-supervised SE(3)-invariant image embeddings" />
+	<meta charset="UTF-8">
+</head>
+
+<body>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<table class="header" align=left>
+				<tr>
+					<td colspan=4>
+						<span
+							style="font-size: 32px; font-family: 'Courier New', Courier, monospace; /* Adds fallbacks */">Self-supervised
+							SE(3)-invariant image embeddings</span>
+					</td>
+				</tr>
+				<tr>
+					<td align=left>
+						<span style="font-size:17px">Janelle Cai</span>
+					</td>
+					<td align=left>
+						<span style="font-size:17px">William Yue</span>
+					</td>
+				<tr>
+					<td colspan=4 align=left><span style="font-size:18px">Final project for MIT 6.8300: Advances in
+							Computer Vision</span></td>
+				</tr>
+			</table>
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="intro">
+		<div class="margin-left-block">
+			<!-- table of contents here -->
+			<div style="position:fixed; max-width:inherit; top:max(20%,120px)">
+				<b style="font-size:16px">Outline</b><br><br>
+				<a href="#intro">Introduction</a><br><br>
+				<a href="#prior_work">Prior Work</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#prior_work_repl">Representation learning</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#prior_work_ssl">Self-supervised learning</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#prior_work_mv">Multi-view augmentation</a><br><br>
+				<a href="#background_dino">Background on DINO</a><br><br>
+				<a href="#datasets">Datasets</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#datasets_co3d">Common Objects in 3D</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#datasets_cifar">CIFAR-100</a><br><br>
+				<a href="#methods">Methods</a><br><br>
+				<a href="#evaluation">Evaluation</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#evaluation_knn">k-Nearest Neighbors</a><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#evaluation_linear">Linear probe</a><br><br>
+				<a href="#visualizations">Visualizations</a><br><br>
+				<a href="#conclusion">Conclusion</a><br><br>
+				<a href="#limitations_future_work">Limitations and future work</a><br><br>
+			</div>
+		</div>
+		<div class="main-content-block">
+			<img src="./images/all_big.gif" width=512px />
+		</div>
+		<div class="margin-right-block">
+			Attention maps of the <code>&lt;CLS&gt;</code> token for 10 subsampled
+			frames of a chair from the CO3D dataset.<br><br>
+
+			The left attention map is from a standard multi-crop DINO model, while
+			the right attention map is from a DINO-like model trained using our
+			novel multi-view method. The right attention map exhibits less noise
+			from the background, more cleanly distinguishing the object of interest
+			from all perspectives.
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="intro">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Introduction</h1>
+			Data labeling is a notoriously expensive bottleneck in computer vision tasks.
+			This has driven significant interest toward Self-Supervised Learning (SSL).
+			SSL is a paradigm where models learn useful visual representations without manual annotations
+			Among recent SSL methods, DINO <a href="#ref_1">[1]</a> has gained popularity due to
+			its ability to produce high-quality, semantically meaningful embeddings by contrasting
+			multiple augmented views of an image.<br><br>
+
+			Typically, DINO achieves this by generating multiple random crops of a single image,
+			encouraging the model to learn invariances to such cropping transformations.
+			However, real-world visual changes often arise from three-dimensional viewpoint variations
+			rather than mere 2D cropping. Inspired by this insight, our project explores whether
+			SSL can leverage true 3D viewpoint changes to learn robust and invariant image embeddings.<br><br>
+
+			To this end, we replace the traditional random-crop augmentations used by DINO
+			with viewpoint variations provided by the CO3D dataset. By training the DINO framework
+			with these realistic 3D viewpoint shifts, we aim to learn embeddings that are explicitly
+			invariant to transformations in the special Euclidean group, SE(3).
+		</div>
+		<!-- <div class="margin-right-block">
+			Margin note that clarifies some detail #main-content-block for intro section.
+		</div> -->
+	</div>
+
+	<div class="content-margin-container" id="prior_work">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Prior Work</h1>
+			<h2 id="prior_work_repl">Representation Learning</h2>
+			Representation learning involves discovering meaningful and generalizable features from raw data.
+			Historically, supervised learning has been a primary method for representation learning,
+			using labeled datasets to train models that map inputs directly to annotated outputs.
+			Models trained with supervision, such as Convolutional Neural Networks (CNNs),
+			learn representations implicitly while optimizing for classification accuracy.
+			However, supervised methods rely heavily on large, meticulously annotated datasets,
+			which can be expensive and impractical for many real-world applications.<br><br>
+
+			In contrast, Self-Supervised Learning (SSL) addresses this issue by removing the dependency on labeled data.
+			SSL methods generate their own supervisory signals from the data itself,
+			typically through cleverly designed pretext tasks or contrastive objectives.
+			This approach allows models to learn robust and generalizable embeddings without manual annotations.
+			Remarkably, SSL methods have achieved and surpassed the performance of supervised learning approaches
+			on several standard benchmarks, such as image retrieval or copy detection <a href="#ref_1">[1]</a>.<br><br>
+
+			<h2 id="prior_work_ssl">Self-Supervised Learning</h2>
+			Recent SSL methods broadly fall into two categories: contrastive and non-contrastive.<br><br>
+
+			Contrastive SSL methods, like SimCLR <a href="#ref_2">[2]</a> and MoCo <a href="#ref_3">[3]</a>,
+			train models by pulling representations of augmented views of the same image closer together
+			in the embedding space while pushing representations of different images apart.
+			SimCLR generates positive pairs through random autmentations and uses a large batch size for negative
+			sampling,
+			which is computationally expensive. MoCo addresses the computational bottleneck of SimCLR with a
+			momentum encoder and a queue-based dictionary of embeddings. <br><br>
+
+			Non-contrastive methods eliminate the need for negative pairs, allowing training to work with fewer
+			resources.
+			Notable non-contrastive SSL approaches include BYOL <a href="#ref_4">[4]</a> and DINO <a
+				href="#ref_1">[1]</a>.
+			BYOL relies on two networks, a target and an online network, where the online network is trained
+			to predict the target network's representation of an image under a different augmentation.
+			DINO uses a similar architecture to BYOL, but uses a different loss, which avoids collapse
+			through centering and sharpening strategies applied to the teacher's outputs. We use DINO
+			for our analysis because of its high quality embeddings and its robustness to collapse.<br><br>
+
+			<h2 id="prior_work_mv">Multi-View Augmentation in SSL</h2>
+
+			Leveraging multi-view information for SSL is a promising yet relatively underexplored domain.
+			For instance, VideoMoCo <a href="#ref_13">[13]</a> leverages temporal coherence in video frames to
+			construct positive pairs, training models to remain consistent across time. Similarly,
+			Time-Contrastive Networks <a href="#ref_14">[14]</a> use temporally adjacent frames from videos
+			to learn embeddings that are invariant to time-based transformations. However, these methods often
+			focus on temporal consistency as opposed to explicit 3D viewpoint variation.
+		</div>
+		<!-- <div class="margin-right-block" style="transform: translate(0%, -100%);">
+			you can move the margin notes up and down with translate
+			Interestingly, Plato also asked if X does Y, in <a href="#ref_1">[1]</a>.
+		</div> -->
+	</div>
+
+	<div class="content-margin-container" id="background_dino">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Background on DINO</h1>
+			DINO is a simple self-supervised method for learning image embeddings.
+			The method pairs especially well with Vision Transformers (ViT), and results in features
+			with more explicit knowledge of semantic segmentation than similar models trained with supervision.
+			The resultant embeddings are also immediately useful as k-NN classifiers.<br><br>
+
+			Like in knowledge distillation, two networks, a student and a teacher, are fed two
+			different random views <math>
+				<msub>
+					<mi>x</mi>
+					<mn>1</mn>
+				</msub>
+			</math> and <math>
+				<msub>
+					<mi>x</mi>
+					<mn>2</mn>
+				</msub>
+			</math> of the same underlying image <math>
+				<mi>x</mi>
+			</math>. They each output a <math>
+				<mi>K</mi>
+			</math>-dimensional
+			feature vector, and a softmax function is applied to both outputs. The student is trained to match a
+			centered
+			and sharpened version of the teacher's distribution via backpropagation against a cross-entropy loss.
+			A stop-gradient prevents training of the teacher. This can be viewed as learning to optimize an <math>
+				<mi>K</mi>
+			</math>-way
+			classification task that is defined implicitly through the training procedure, even though we cannot
+			directly interpret the <math>
+				<mi>K</mi>
+			</math> classes and no labels are used for supervision.<br><br>
+
+			Unfortunately, we do not already have a strong teacher model that we can train our student's embeddings off
+			of.
+			Instead, the teacher model is constructed from the student model via a momentum encoder. The student and
+			teacher
+			are constrained to have the same architecture, and the teacher parameters are updated with an exponential
+			moving
+			average (ema) of the student parameters. Essentially, the loss function teaches the student to match outputs
+			with an averaged version of its older selves on two different views of the same image.<br><br>
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<img src="./images/dino_framework.png" width=512px />
+		</div>
+		<div class="margin-right-block">
+			An diagram of the DINO framework. Image taken from the DINO paper.
+		</div>
+	</div>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			The views for the two models are generated using a multicrop strategy. The set contains two <i>global</i>
+			views
+			(larger crops of the image) and several <i>local</i> views (smaller crops of the image). All crops are
+			passed to the
+			student, while only global crops are passed to the teacher, encouraging learning of "local-to-global"
+			correspondences. Intuitively, this should teach the student model that local patches of an image
+			(e.g. part of a chair) should have a similar embedding to global patches of an image (e.g. the entire
+			chair).<br><br>
+
+			We used the so-called "basic parameterization" of DINO, where global crops cover more than <math>
+				<mn>50</mn>
+				<mo>%</mo>
+			</math>
+			of the area of the image and are rescaled to a resolution of <math>
+				<msup>
+					<mn>224</mn>
+					<mn>2</mn>
+				</msup>
+			</math>, while local views cover less
+			than <math>
+				<mn>50</mn>
+				<mo>%</mo>
+			</math> of the area of the image and are rescaled to a resolution of <math>
+				<msup>
+					<mn>96</mn>
+					<mn>2</mn>
+				</msup>
+			</math>. Note that a few additional
+			augmentations are applied to the views, such as flipping, color jitter, Gaussian blurring, and solarization,
+			encouraging invariance with respect to these image transformations.<br><br>
+
+			A common problem in self-supervised learning techniques is preventing collapse. For example,
+			one way for the DINO model to minimize the cross-entropy loss above is to just always output the same
+			distribution no matter the input, but this wouldn't result in a useful image embedding.
+			One common way of avoiding collapse is via a contrastive loss, i.e. pushing negative pairs apart in addition
+			to pulling positive pairs together.
+			In DINO, however, it can be prevented simply by centering and sharpening the momentum teacher output.
+			The center is computed as an exponential moving average of the means of the teacher output across recent
+			batches.
+			This is subtracted off the output as a bias term. Sharpening is done by exponentiating the values of the
+			distribution
+			and renormalizing, using a small temperature under <math>
+				<mn>0.1</mn>
+			</math>.<br><br>
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="datasets">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Datasets</h1>
+			We used two datasets for this project.<br><br>
+
+			<h2 id="datasets_co3d">Common Objects in 3D (CO3D)</h2>
+			The Common Objects in 3D (CO3D) <a href="#ref_5">[5]</a> dataset was originally designed for
+			category-specific
+			3D reconstruction and novel-view synthesis. It consists of approximately 1.5 million frames
+			from 19,000 videos, categorized into 50 object classes.<br><br>
+
+			<img src="./images/grid.gif" width=512px />
+			<br><br>
+
+			We chose the CO3D dataset for training our modified DINO model because it provides
+			diverse views of numerous objects. CO3D also includes labeled categories,
+			which allows us to use it for evaluation as well.<br><br>
+
+			For training the DINO model, we used a subset of the CO3D dataset containing 7177 video sequences.
+			These sequences were divided into 5998 sequences for training and 1179 sequences for testing.
+			Since the original dataset's frames come from continuous videos, viewpoint changes
+			between adjacent frames are minimal. Thus, we downsampled each sequence to 10 evenly spaced frames.
+			Note that when training, we ignore the object labels of the sequences.<br><br>
+
+			<h2 id="datasets_cifar">CIFAR-100</h2>
+
+			While testing on a held-out portion of the CO3D dataset is useful for assessing
+			in-distribution performance, it has limitations. The CO3D test set shares the same 51 object categories
+			present in the training set and generally consists of images with a centered object in the foreground.
+			As a result, this setup may not fully reflect how well the learned representations generalize to broader,
+			more diverse data distributions.<br><br>
+
+			To address this, we also evaluated our models on the CIFAR-100 dataset <a href="#ref_6">[6]</a>,
+			a standard benchmark in image classification. CIFAR-100 contains 60,000 32x32 color images
+			across 100 classes, with 600 images per class. The dataset is split into 50,000 training and
+			10,000 test images. Unlike CO3D, CIFAR-100 includes varied and less structured compositions,
+			making it a useful benchmark for evaluating how well learned representations transfer to
+			out-of-distribution visual inputs.<br><br>
+		</div>
+		<div class="margin-right-block" style="transform: translate(0%, -300%);">
+			Example videos from the CO3D dataset. Taken from the CO3D repo.
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="methods">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Methods</h1>
+
+			We trained DINO models using three different types of data augmentations: <code>view</code>,
+			<code>crop</code>,
+			and <code>both</code>. These augmentation settings control how input samples are prepared for the
+			teacher and student networks during self-supervised training:
+
+			<ul>
+				<li><code>view</code>: In this setting, augmentations are based purely on viewpoint changes.
+					For each sequence in our dataset, we use all 10 available views. Two views are randomly assigned
+					to the teacher network, and the remaining eight are assigned to the student network.
+					Teacher images are resized to 256 pixels and center-cropped to 224x224. Student images are resized
+					to 128 pixels and center-cropped to 96x96. This setting leverages real-world 3D transformations to
+					drive invariance.</li>
+				<li><code>crop</code>: This follows the original DINO augmentation setup. For each sequence in the
+					training data,
+					a single viewpoint is randomly sampled from the 10 viewpoints in the sequence.
+					Then, we apply the standard DINO augmentations to the selected viewpoint,
+					including the global and local crops. Specifically, global crops are sampled with
+					a scale range of 0.4 to 1.0, and local crops with a scale range of 0.05 to 0.4.
+					The augmentations are then resized and fed into the teacher or student networks accordingly.
+					This setup serves as a baseline, so that we can compare the traditional DINO augmentation with
+					the viewpoint augmentation when trained on CO3D images.</li>
+				<li><code>both</code>: This is a hybrid approach that combines viewpoint-based augmentation
+					with cropping. First, two of the 10 available views are randomly assigned to the teacher network,
+					and the remaining eight to the student network—just as in the <code>view</code> setting.
+					Then, additional random cropping is applied: the teacher views receive global crops,
+					and the student views receive local crops.</li>
+			</ul>
+
+			To assess the effect of model capacity on performance, we trained each of the three augmentation settings
+			using two different model architectures:
+			<ul>
+				<li><code>vit_tiny</code>: A small Vision Transformer with 3 attention heads and a 192-dimensional
+					output embedding.</li>
+				<li><code>vit_small</code>: A larger variant with 6 attention heads and a 384-dimensional output
+					embedding.</li>
+			</ul>
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="evaluation">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Evaluation</h1>
+			To assess the quality of the learned image representations, we conducted two main types of evaluation:
+			k-Nearest Neighbors (k-NN) classification and linear probing. Both evaluations were done on both
+			the CO3D and CIFAR-100 datasets. For CO3D, we randomly sample 1 of the 10 images in each sequence
+			to use in the evaluation. The CO3D dataset allows us to evaluate the performance of the embeddings
+			on a test set drawn from the same distribution as the training data. CIFAR-100 provides a challenging
+			domain shift evaluation, as its small, low-resolution images and broad semantic categories differ
+			significantly from CO3D.<br><br>
+
+			These methods help us understand both the immediate utility of the learned embeddings
+			(without any fine-tuning) and their effectiveness when adapted to downstream
+			classification tasks with minimal supervision.<br><br>
+
+			<h2 id="evaluation_knn">k-Nearest Neighbors</h2>
+			The k-NN classifier provides a non-parametric way to evaluate how well the embeddings
+			represent the semantic meaning of an image. It requires no additional training, and thus,
+			directly measures how well the learned features cluster semantically similar examples.<br><br>
+
+			To perform k-NN, we first split the evaluation dataset into training and test sets.
+			We extracted embeddings for all images in both sets using the trained DINO model.
+			For each test embedding, we computed its cosine similarity (via dot product) with all training embeddings.
+			The top-k most similar training embeddings were then used to perform a weighted vote based on similarity
+			scores.
+			The predicted class for each test sample was determined from this vote. This is the method used in
+			<a href="#ref_7">[7]</a>.<br><br>
+
+			We report Top-1 accuracy, which reflects the proportion of test samples where the top-voted class is
+			correct,
+			and Top-5 accuracy, which measures whether the correct label is within the five most confidently predicted
+			classes.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<table style="margin: 0 auto; width:80%; border-collapse: collapse; border: 1px solid #ddd;">
+				<thead>
+					<tr style="background-color: #f8f8f8;">
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Model</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Arch</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>5</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>10</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>20</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>100</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>200</mn>
+								</math></strong>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>35.96 / 54.54</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>35.54 / 55.98</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>35.45 / 58.18</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>34.18 / 60.98</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>30.16 / 60.39</strong></td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">31.98 / 49.62</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">33.25 / 52.50</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">32.49 / 53.77</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">30.11 / 57.00</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">29.35 / 56.83</td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">34.01 / 52.93</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">35.20 / 55.22</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">35.11 / 56.23</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">32.91 / 57.34</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">32.15 / 58.02</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>38.00 / 57.51</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>38.08 / 60.64</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>38.59 / 62.09</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>36.13 / 64.55</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>35.96 / 64.46</strong></td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">35.37 / 53.94</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">36.56 / 55.56</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">34.27 / 58.61</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">32.99 / 61.15</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">32.15 / 60.81</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">34.61 / 53.44</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">36.56 / 55.47</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">37.66 / 58.44</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">34.18 / 60.73</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">33.84 / 61.24</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="margin-right-block">
+			Table 1: k-NN evaluation on CO3D (Acc @1 / Acc @5)
+		</div>
+	</div>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			The results indicate that viewpoint-based augmentations consistently outperform standard crop-based
+			augmentations. This is especially evident for the <code>vit_small</code> models. The hybrid augmentations
+			sometimes
+			perform slightly better than the crop-based augmentations.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<table style="margin: 0 auto; width:80%; border-collapse: collapse; border: 1px solid #ddd;">
+				<thead>
+					<tr style="background-color: #f8f8f8;">
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Model</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Arch</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>5</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>10</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>20</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>100</mn>
+								</math></strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong><math>
+									<mi>k</mi>
+									<mo>=</mo>
+									<mn>200</mn>
+								</math></strong>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>21.84 / 40.36</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>22.52 / 43.30</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>22.75 / 45.69</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>21.56 / 47.54</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>20.45 / 47.29</strong></td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">20.69 / 38.20</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">20.86 / 40.98</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">21.49 / 43.43</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">20.31 / 46.47</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">19.32 / 46.01</td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">21.35 / 38.91</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">21.96 / 41.47</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">21.58 / 44.12</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">20.64 / 46.47</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">19.79 / 46.05</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>25.44 / 44.72</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>26.23 / 47.56</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>26.52 / 49.91</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>25.13 / 52.86</strong></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>23.89 / 52.07</strong></td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">23.34 / 40.57</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">23.78 / 43.36</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">23.80 / 46.35</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">22.25 / 48.47</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">21.22 / 48.11</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">23.34 / 41.05</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">23.33 / 44.10</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">23.63 / 46.90</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">22.20 / 49.26</td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">21.33 / 48.64</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="margin-right-block">
+			Table 2: k-NN evaluation on CIFAR-100 (Acc @1 / Acc @5)
+		</div>
+	</div>
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			Despite being trained on CO3D, models trained with viewpoint augmentations achieved better generalization on
+			CIFAR-100 than those trained with cropping or both. This suggests that viewpoint-based SSL can capture more
+			semantically meaningful and robust features that generalize in other cases too.<br><br>
+
+			<h2 id="evaluation_linear">Linear probe</h2>
+
+			Linear probing is another common benchmark used to evaluate learned representations. The core idea is that a
+			strong embedding space should support simple, downstream classifiers. In this setup, we freeze the backbone
+			encoder (the DINO-trained ViT model) and train a linear classifier on top of the extracted embeddings. This
+			linear layer is trained using the training split of the evaluation dataset, and performance is measured on
+			the corresponding test set. The goal is to measure how linearly separable the learned features are. A strong
+			representation should allow a simple linear model to achieve high accuracy on downstream classification
+			tasks.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<table style="margin: 0 auto; width: 40%; border-collapse: collapse; border: 1px solid #ddd;">
+				<thead>
+					<tr style="background-color: #f8f8f8;">
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Model</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Arch</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;">
+							<strong>Accuracy</strong>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>30.28 / 57.25</strong></td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">28.67 / 56.23</td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">29.09 / 54.20</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>37.91 / 64.21</strong></td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">33.50 / 63.10</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">35.20 / 61.40</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="margin-right-block">
+			Table 3: Linear probe evaluation on CO3D (Acc @1 / Acc @5)
+		</div>
+	</div>
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			Once again, the <code>view</code>-based training strategy produces the strongest performance across both
+			architectures.
+			In the CO3D results, it has the highest Top-1 and Top-5 accuracy, outperforming the <code>crop</code> and
+			<code>both</code>
+			settings.<br><br>
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<table style="margin: 0 auto; width: 40%; border-collapse: collapse; border: 1px solid #ddd;">
+				<thead>
+					<tr style="background-color: #f8f8f8;">
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Model</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;"><strong>Arch</strong>
+						</th>
+						<th style="text-align:left; padding:8px; border-bottom:1px solid #ddd;">
+							<strong>Accuracy</strong>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>21.91 / 48.83</strong></td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">19.97 / 45.49</td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>tiny_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_tiny</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">20.39 / 46.11</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_view</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><strong>27.64 / 55.79</strong></td>
+					</tr>
+					<tr>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_crop</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">24.74 / 53.01</td>
+					</tr>
+					<tr style="background-color: #f8f8f8;">
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>small_both</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;"><code>vit_small</code></td>
+						<td style="padding:8px; border-bottom:1px solid #ddd;">24.85 / 52.47</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="margin-right-block">
+			Table 4: Linear probe evaluation on CIFAR-100 (Acc @1 / Acc @5)
+		</div>
+	</div>
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			On CIFAR-100, we observe a similar trend. The <code>view</code>-based models perform best, especially for
+			the
+			<code>vit_small</code> architecture, suggesting that the learned embeddings are not overly tailored to the
+			CO3D distribution. Instead, they retain generality and remain the most effective when applied to visually
+			and
+			structurally different datasets, indicating robustness across domains.<br><br>
+
+			Together with the k-NN results, this provides further support that viewpoint-aware SSL not only benefits
+			in-distribution performance but also offers a degree of robustness in domain-shift scenarios like
+			CIFAR-100.<br><br>
+
+			These findings support the hypothesis that viewpoint-aware SSL leads to improved image embeddings, and these
+			improvements remain effective across datasets with different characteristics, indicating that the model
+			captures transferable, domain-agnostic features.<br><br>
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="visualizations">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Visualizations</h1>
+			In this section, we visualize the attention maps of the <code>&lt;CLS&gt;</code> token of the
+			models with the <code>vit_small</code> architecture trained with the three different methods.
+			We sampled a view representative images from the CO3D dataset and visualize the attention maps
+			shown below.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<img src="images/attention_maps.png" alt="CLS attention map" style="width: 50%; height: auto;">
+		</div>
+		<div class="margin-right-block">
+			Attention maps of the <code>&lt;CLS&gt;</code> token for a bike, a carrot, a stop sign,
+			and a toy plane. The left column is trained with the <code>crop</code> strategy, the middle
+			column is trained with the <code>both</code> strategy, and the right column is trained with the
+			<code>view</code> strategy.<br><br>
+
+			We selected the attention head that qualitatively appeared to segment the object most effectively,
+			out of the six possible options per model.
+		</div>
+	</div>
+
+	<div class="content-margin-container">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			It isn't immediately clear which model's attention maps perform the best. For example, the <code>crop</code>
+			strategy identifies the bike and toy plane rather well, but it tends to capture a lot more background noise
+			on the other two objects. We believe that viewpoint transformations may result in models that are more
+			likely to only attend to the object of interest, since the object is what always remains in frame
+			across the video. This effect can also be seen in the gif at the top of this page, where the
+			<code>crop</code>
+			model attends to background noise far more than the <code>view</code> model, which is very focused on the
+			chair.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="conclusion">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Conclusion</h1>
+			Our evaluations indicate that explicitly leveraging 3D viewpoint variations in SSL improves model
+			performance
+			on downstream evaluation tasks, such as k-NN and linear probe classification. Across all evaluations,
+			the <code>view</code>-based models achieved the highest performance. Generally, the <code>crop</code>-based
+			models performed the worst.<br><br>
+
+			The <code>both</code> configuration, despite using a combination of the
+			augmentations, shows inconsistent benefits—possibly because combining viewpoint changes with random cropping
+			introduces too much variability or misalignment, which can dilute the useful learning signal.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+
+	<div class="content-margin-container" id="limitations_future_work">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<h1>Limitations and future work</h1>
+			Despite promising results, this work comes with several limitations. First, our models were trained
+			on a dataset with only 51 object categories, limiting the diversity of learned features.
+			Second, due to limited compute, we only experimented with two model scales and did not tune
+			hyperparameters extensively.<br><br>
+
+			Another challenge is scalability: while our method of viewpoint augmentation produces
+			better results on certain tasks, the method relies on having access to a high-quality dataset of
+			many different views of many objects. In practice, this may be difficult to collect for large,
+			diverse, and high-quality datasets.<br><br>
+
+			Additionally, there's some ambiguity around what qualifies as "multi-view" data and what makes it useful.
+			On one hand, structured datasets explicitly capturing multiple viewpoints around an object—such as
+			CO3D—offer
+			a clear view of each viewpoint. On the other hand, general video frames may include arbitrary camera
+			motion or scene dynamics, making it unclear whether they truly provide useful viewpoint variation, though
+			they may better reflect real-world conditions. <br><br>
+
+			One potential direction to address challenges related to data availability is leveraging synthetic data.
+			Recent advances in differentiable rendering (e.g. <a href="#ref_8">[8]</a>, <a href="#ref_9">[9]</a>, <a
+				href="#ref_10">[10]</a>)
+			and generative modeling (e.g. <a href="#ref_11">[11]</a>, <a href="#ref_12">[12]</a>) could allow for the
+			creation of diverse,
+			high-quality synthetic multi-view datasets. Exploring synthetic data could enable training SSL models
+			like DINO with extensive, carefully controlled viewpoint variations, as well as more diverse objects and
+			locations. This approach could significantly mitigate data bottlenecks and scale viewpoint-based SSL
+			effectively to broader, more diverse visual domains.
+		</div>
+		<div class="margin-right-block">
+		</div>
+	</div>
+
+	<div class="content-margin-container" id="citations">
+		<div class="margin-left-block">
+		</div>
+		<div class="main-content-block">
+			<div class='citation' id="references" style="height:auto"><br>
+				<h2>References</h2>
+				<a id="ref_1"></a>[1] M. Caron, H. Touvron, I. Misra, H. Jégou, J. Mairal, P. Bojanowski, and A. Joulin,
+				"Emerging properties in self-supervised vision transformers," in Proc. IEEE/CVF Int. Conf. Computer
+				Vision (ICCV), Oct. 2021, pp. 9650-9660.<br><br>
+				<a id="ref_2"></a>[2] T. Chen, S. Kornblith, M. Norouzi, and G. Hinton, "A Simple Framework for
+				Contrastive Learning of Visual Representations," in Proc. 37th Int. Conf. on Machine Learning (ICML),
+				Virtual Event, Jul. 2020, pp. 1597-1607.<br><br>
+				<a id="ref_3"></a>[3] K. He, H. Fan, Y. Wu, S. Xie, and R. Girshick, "Momentum Contrast for Unsupervised
+				Visual Representation Learning," in Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition (CVPR),
+				Virtual/Seattle, WA, USA, Jun. 2020, pp. 9726-9735. <br><br>
+				<a id="ref_4"></a>[4] J.-B. Grill et al., "Bootstrap Your Own Latent: A New Approach to Self-Supervised
+				Learning," in Advances in Neural Information Processing Systems 33 (NeurIPS), Online, Dec. 2020, pp.
+				21271-21284.<br><br>
+				<a id="ref_5"></a>[5] J. Reizenstein, R. Shapovalov, P. Henzler, L. Sbordone, P. Labatut, and D.
+				Novotny, "Common Objects in 3D: Large-Scale Learning and Evaluation of Real-life 3D Category
+				Reconstruction," in Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV), Montréal, QC, Canada, Oct. 2021,
+				pp. 10881-10891. <br><br>
+				<a id="ref_6"></a>[6] A. Krizhevsky, "Learning Multiple Layers of Features from Tiny Images," M.S.
+				thesis, Dept. Comput. Sci., Univ. Toronto, Toronto, ON, Canada, 2009. (CIFAR-10/100 Technical
+				Report).<br><br>
+				<a id="ref_7"></a>[7] Z. Wu, Y. Xiong, S. X. Yu, and D. Lin, "Unsupervised feature learning via
+				non-parametric instance discrimination," in Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition
+				(CVPR), Salt Lake City, UT, USA, Jun. 2018, pp. 3733-3742.<br><br>
+				<a id="ref_8"></a>[8] B. Mildenhall, P. P. Srinivasan, M. Tancik, J. T. Barron, R. Ramamoorthi, and R.
+				Ng, "NeRF: Representing scenes as neural radiance fields for view synthesis," in Proc. Eur. Conf.
+				Computer Vision (ECCV), Glasgow, U.K., Aug. 2020, pp. 405-421.<br><br>
+				<a id="ref_9"></a>[9] V. Sitzmann, M. Zollhöfer, and G. Wetzstein, "Scene representation networks:
+				Continuous 3D-structure-aware neural scene representations," in Advances in Neural Information
+				Processing Systems 32 (NeurIPS), Vancouver, BC, Canada, Dec. 2019, pp. 11129-11140.<br><br>
+				<a id="ref_10"></a>[10] B. Kerbl, G. Kopanas, T. Leimkühler, and G. Drettakis, "3D Gaussian splatting
+				for real-time radiance field rendering," ACM Trans. Graph., vol. 42, no. 4, Art. 51, Jul. 2023 (Proc.
+				SIGGRAPH 2023).<br><br>
+				<a id="ref_11"></a>[11] E. R. Chan et al., "GeNVS: Generative novel view synthesis with 3D-aware
+				diffusion models," in Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV), Paris, France, Oct. 2023, pp.
+				4217-4227.<br><br>
+				<a id="ref_12"></a>[12] A. Blattmann et al., "Stable Video Diffusion: Scaling latent video diffusion
+				models to large datasets," arXiv preprint arXiv:2311.15127, Nov. 2023.<br><br>
+				<a id="ref_13"></a>[13] T. Pan, Y. Song, T. Yang, W. Jiang, and W. Liu, "VideoMoCo: Contrastive video
+				representation learning with temporally adversarial examples," in Proc. IEEE/CVF Conf. Computer Vision
+				and Pattern Recognition (CVPR), Virtual/Nashville, TN, USA, Jun. 2021, pp. 11205-11214.<br><br>
+				<a id="ref_14"></a>[14] P. Sermanet et al., "Time-Contrastive Networks: Self-Supervised Learning from
+				Video," in Proc. IEEE Int. Conf. Robotics and Automation (ICRA), Brisbane, Australia, May 2018, pp.
+				1134-1141.<br><br>
+			</div>
+		</div>
+		<div class="margin-right-block">
+			<!-- margin notes for reference block here -->
+		</div>
+	</div>
+
+</body>
+
+</html>

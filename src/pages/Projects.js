@@ -4,6 +4,14 @@ import Card from '../components/Card';
 function Projects() {
   const projects = [
     {
+      title: "Self-Supervised SE(3)-Invariant Image Embeddings",
+      description: "dino.md",
+      skills: ["Python", "PyTorch"],
+      links: [
+        { text: "Blog", url: "/projects/dino/index.html" }
+      ]
+    },
+    {
       title: "Meta-Learning Across Domains",
       description: "meta.md",
       skills: ["Python", "PyTorch"],
