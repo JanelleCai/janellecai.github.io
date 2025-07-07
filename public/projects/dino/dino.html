@@ -1,323 +1,54 @@
 <html>
-
 <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-	<link rel="shortcut icon" href="images/favicon.ico">
-	<style type="text/css">
-		body {
-			background-color: #f5f9ff;
-		}
-
-		/* Hide both math displays initially, will display based on JS detection */
-		.mathjax-mobile,
-		.mathml-non-mobile {
-			display: none;
-		}
-
-		/* Show the MathML content by default on non-mobile devices */
-		.show-mathml .mathml-non-mobile {
-			display: block;
-		}
-
-		.show-mathjax .mathjax-mobile {
-			display: block;
-		}
-
-		.content-margin-container {
-			display: flex;
-			width: 100%;
-			/* Ensure the container is full width */
-			justify-content: left;
-			/* Horizontally centers the children in the container */
-			align-items: center;
-			/* Vertically centers the children in the container */
-		}
-
-		.main-content-block {
-			width: 65%;
-			/* Change this percentage as needed */
-			max-width: 1100px;
-			/* Optional: Maximum width */
-			background-color: #fff;
-			border-left: 1px solid #DDD;
-			border-right: 1px solid #DDD;
-			padding: 8px 8px 8px 8px;
-			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-		}
-
-		.margin-left-block {
-			font-size: 14px;
-			width: 20%;
-			/* Change this percentage as needed */
-			max-width: 200px;
-			/* Optional: Maximum width */
-			position: relative;
-			margin-left: 10px;
-			text-align: left;
-			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-			padding: 5px;
-		}
-
-		.margin-right-block {
-			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-			font-size: 14px;
-			width: 25%;
-			/* Change this percentage as needed */
-			max-width: 256px;
-			/* Optional: Maximum width */
-			position: relative;
-			text-align: left;
-			padding: 10px;
-			/* Optional: Adds padding inside the caption */
-		}
-
-		img {
-			max-width: 100%;
-			/* Make sure it fits inside the container */
-			height: auto;
-			display: block;
-			margin: auto;
-		}
-
-		.my-video {
-			max-width: 100%;
-			/* Make sure it fits inside the container */
-			height: auto;
-			display: block;
-			margin: auto;
-		}
-
-		/* Hide both video displays initially, will display based on JS detection */
-		.vid-mobile,
-		.vid-non-mobile {
-			display: none;
-		}
-
-		/* Show the video content by default on non-mobile devices */
-		.show-vid-mobile .vid-mobile {
-			display: block;
-		}
-
-		.show-vid-non-mobile .vid-non-mobile {
-			display: block;
-		}
-
-		a:link,
-		a:visited {
-			color: #0e7862;
-			/*#1367a7;*/
-			text-decoration: none;
-		}
-
-		a:hover {
-			color: #24b597;
-			/*#208799;*/
-		}
-
-		h1 {
-			font-size: 24px;
-			margin-top: 4px;
-			margin-bottom: 10px;
-		}
-
-		h2 {
-			font-size: 18px;
-			margin-top: 4px;
-			margin-bottom: 10px;
-		}
-
-		table.header {
-			font-weight: 300;
-			font-size: 17px;
-			flex-grow: 1;
-			width: 100%;
-			max-width: none;
-		}
-
-		table td,
-		table td * {
-			vertical-align: middle;
-			position: relative;
-		}
-
-		table.paper-code-tab {
-			flex-shrink: 0;
-			margin-left: 8px;
-			margin-top: 8px;
-			padding: 0px 0px 0px 8px;
-			width: 290px;
-			height: 150px;
-		}
-
-		.layered-paper {
-			/* modified from: http://css-tricks.com/snippets/css/layered-paper/ */
-			box-shadow:
-				0px 0px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The top layer shadow */
-				5px 5px 0 0px #fff,
-				/* The second layer */
-				5px 5px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The second layer shadow */
-				10px 10px 0 0px #fff,
-				/* The third layer */
-				10px 10px 1px 1px rgba(0, 0, 0, 0.35);
-			/* The third layer shadow */
-			margin-top: 5px;
-			margin-left: 10px;
-			margin-right: 30px;
-			margin-bottom: 5px;
-		}
-
-		hr {
-			height: 1px;
-			/* Sets the height of the line to 1 pixel */
-			border: none;
-			/* Removes the default border */
-			background-color: #DDD;
-			/* Sets the line color to black */
-		}
-
-		div.hypothesis {
-			width: 80%;
-			background-color: #EEE;
-			border: 1px solid black;
-			border-radius: 10px;
-			-moz-border-radius: 10px;
-			-webkit-border-radius: 10px;
-			font-family: Courier;
-			font-size: 18px;
-			text-align: center;
-			margin: auto;
-			padding: 16px 16px 16px 16px;
-		}
-
-		div.citation {
-			font-size: 0.8em;
-			background-color: #fff;
-			padding: 10px;
-			height: 200px;
-		}
-
-		.fade-in-inline {
-			position: absolute;
-			text-align: center;
-			margin: auto;
-			-webkit-mask-image: linear-gradient(to right,
-					transparent 0%,
-					transparent 40%,
-					black 50%,
-					black 90%,
-					transparent 100%);
-			mask-image: linear-gradient(to right,
-					transparent 0%,
-					transparent 40%,
-					black 50%,
-					black 90%,
-					transparent 100%);
-			-webkit-mask-size: 8000% 100%;
-			mask-size: 8000% 100%;
-			animation-name: sweepMask;
-			animation-duration: 4s;
-			animation-iteration-count: infinite;
-			animation-timing-function: linear;
-			animation-delay: -1s;
-		}
-
-		.fade-in2-inline {
-			animation-delay: 1s;
-		}
-
-		.inline-div {
-			position: relative;
-			display: inline-block;
-			/* Makes both the div and paragraph inline-block elements */
-			vertical-align: top;
-			/* Aligns them at the top, you can adjust this to middle, bottom, etc., based on your needs */
-			width: 50px;
-			/* Optional: Adds space between the div and the paragraph */
-		}
-	</style>
-
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Self-supervised SE(3)-invariant image embeddings</title>
-	<meta property="og:title" content="Self-supervised SE(3)-invariant image embeddings" />
-	<meta charset="UTF-8">
+
+	<link rel="stylesheet" href="../style.css" />
+
+	<script>
+	window.MathJax = {
+	tex: {
+		inlineMath: [['\\(','\\)'], ['$', '$']],
+		displayMath: [['$$','$$']],
+	}
+	};
+	</script>
+
+	<script defer
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
+	</script>
 </head>
 
 <body>
+	<a href="/projects" class="back-button">← Back to Projects</a>
+	<h1>Self-supervised SE(3)-invariant image embeddings</h1>
 
-	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
-		<div class="main-content-block">
-			<table class="header" align=left>
-				<tr>
-					<td colspan=4>
-						<span
-							style="font-size: 32px; font-family: 'Courier New', Courier, monospace; /* Adds fallbacks */">Self-supervised
-							SE(3)-invariant image embeddings</span>
-					</td>
-				</tr>
-				<tr>
-					<td align=left>
-						<span style="font-size:17px">Janelle Cai</span>
-					</td>
-					<td align=left>
-						<span style="font-size:17px">William Yue</span>
-					</td>
-				<tr>
-					<td colspan=4 align=left><span style="font-size:18px">Final project for MIT 6.8300: Advances in
-							Computer Vision</span></td>
-				</tr>
-			</table>
-		</div>
-		<div class="margin-right-block">
-		</div>
+	<div class="header-container">
+		<div>Janelle Cai and William Yue</div>
+	    <div>May 13, 2025</div>
 	</div>
 
+	<hr>
+
 	<div class="content-margin-container" id="intro">
-		<div class="margin-left-block">
-			<!-- table of contents here -->
-			<div style="position:fixed; max-width:inherit; top:max(20%,120px)">
-				<b style="font-size:16px">Outline</b><br><br>
-				<a href="#intro">Introduction</a><br><br>
-				<a href="#prior_work">Prior Work</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#prior_work_repl">Representation learning</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#prior_work_ssl">Self-supervised learning</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#prior_work_mv">Multi-view augmentation</a><br><br>
-				<a href="#background_dino">Background on DINO</a><br><br>
-				<a href="#datasets">Datasets</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#datasets_co3d">Common Objects in 3D</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#datasets_cifar">CIFAR-100</a><br><br>
-				<a href="#methods">Methods</a><br><br>
-				<a href="#evaluation">Evaluation</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#evaluation_knn">k-Nearest Neighbors</a><br>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a href="#evaluation_linear">Linear probe</a><br><br>
-				<a href="#visualizations">Visualizations</a><br><br>
-				<a href="#conclusion">Conclusion</a><br><br>
-				<a href="#limitations_future_work">Limitations and future work</a><br><br>
-			</div>
-		</div>
 		<div class="main-content-block">
 			<img src="./images/all_big.gif" width=512px />
-		</div>
-		<div class="margin-right-block">
-			Attention maps of the <code>&lt;CLS&gt;</code> token for 10 subsampled
-			frames of a chair from the CO3D dataset.<br><br>
-
-			The left attention map is from a standard multi-crop DINO model, while
-			the right attention map is from a DINO-like model trained using our
-			novel multi-view method. The right attention map exhibits less noise
-			from the background, more cleanly distinguishing the object of interest
-			from all perspectives.
+			<em>
+				Attention maps of the <code>&lt;CLS&gt;</code> token for 10 subsampled
+				frames of a chair from the CO3D dataset.
+				The left attention map is from a standard multi-crop DINO model, while
+				the right attention map is from a DINO-like model trained using our
+				novel multi-view method. The right attention map exhibits less noise
+				from the background, more cleanly distinguishing the object of interest
+				from all perspectives.
+			</em>
 		</div>
 	</div>
 
 	<div class="content-margin-container" id="intro">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Introduction</h1>
+			<h2>Introduction</h2>
 			Data labeling is a notoriously expensive bottleneck in computer vision tasks.
 			This has driven significant interest toward Self-Supervised Learning (SSL).
 			SSL is a paradigm where models learn useful visual representations without manual annotations
@@ -336,17 +67,12 @@
 			with these realistic 3D viewpoint shifts, we aim to learn embeddings that are explicitly
 			invariant to transformations in the special Euclidean group, SE(3).
 		</div>
-		<!-- <div class="margin-right-block">
-			Margin note that clarifies some detail #main-content-block for intro section.
-		</div> -->
 	</div>
 
 	<div class="content-margin-container" id="prior_work">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Prior Work</h1>
-			<h2 id="prior_work_repl">Representation Learning</h2>
+			<h2>Prior Work</h2>
+			<h3 id="prior_work_repl">Representation Learning</h3>
 			Representation learning involves discovering meaningful and generalizable features from raw data.
 			Historically, supervised learning has been a primary method for representation learning,
 			using labeled datasets to train models that map inputs directly to annotated outputs.
@@ -362,7 +88,7 @@
 			Remarkably, SSL methods have achieved and surpassed the performance of supervised learning approaches
 			on several standard benchmarks, such as image retrieval or copy detection <a href="#ref_1">[1]</a>.<br><br>
 
-			<h2 id="prior_work_ssl">Self-Supervised Learning</h2>
+			<h3 id="prior_work_ssl">Self-Supervised Learning</h3>
 			Recent SSL methods broadly fall into two categories: contrastive and non-contrastive.<br><br>
 
 			Contrastive SSL methods, like SimCLR <a href="#ref_2">[2]</a> and MoCo <a href="#ref_3">[3]</a>,
@@ -383,7 +109,7 @@
 			through centering and sharpening strategies applied to the teacher's outputs. We use DINO
 			for our analysis because of its high quality embeddings and its robustness to collapse.<br><br>
 
-			<h2 id="prior_work_mv">Multi-View Augmentation in SSL</h2>
+			<h3 id="prior_work_mv">Multi-View Augmentation in SSL</h3>
 
 			Leveraging multi-view information for SSL is a promising yet relatively underexplored domain.
 			For instance, VideoMoCo <a href="#ref_13">[13]</a> leverages temporal coherence in video frames to
@@ -392,17 +118,11 @@
 			to learn embeddings that are invariant to time-based transformations. However, these methods often
 			focus on temporal consistency as opposed to explicit 3D viewpoint variation.
 		</div>
-		<!-- <div class="margin-right-block" style="transform: translate(0%, -100%);">
-			you can move the margin notes up and down with translate
-			Interestingly, Plato also asked if X does Y, in <a href="#ref_1">[1]</a>.
-		</div> -->
 	</div>
 
 	<div class="content-margin-container" id="background_dino">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Background on DINO</h1>
+			<h2>Background on DINO</h2>
 			DINO is a simple self-supervised method for learning image embeddings.
 			The method pairs especially well with Vision Transformers (ViT), and results in features
 			with more explicit knowledge of semantic segmentation than similar models trained with supervision.
@@ -444,24 +164,18 @@
 			average (ema) of the student parameters. Essentially, the loss function teaches the student to match outputs
 			with an averaged version of its older selves on two different views of the same image.<br><br>
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<img src="./images/dino_framework.png" width=512px />
-		</div>
-		<div class="margin-right-block">
-			An diagram of the DINO framework. Image taken from the DINO paper.
+			<div class="image-container">
+				<img src="./images/dino_framework.png" width=512px />
+				<em>A diagram of the DINO framework. Image taken from the DINO paper.</em>
+			</div>
 		</div>
 	</div>
 
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			The views for the two models are generated using a multicrop strategy. The set contains two <i>global</i>
 			views
@@ -508,24 +222,22 @@
 				<mn>0.1</mn>
 			</math>.<br><br>
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container" id="datasets">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Datasets</h1>
-			We used two datasets for this project.<br><br>
+			<h2>Datasets</h2>
 
-			<h2 id="datasets_co3d">Common Objects in 3D (CO3D)</h2>
+			<h3 id="datasets_co3d">Common Objects in 3D (CO3D)</h3>
 			The Common Objects in 3D (CO3D) <a href="#ref_5">[5]</a> dataset was originally designed for
 			category-specific
 			3D reconstruction and novel-view synthesis. It consists of approximately 1.5 million frames
 			from 19,000 videos, categorized into 50 object classes.<br><br>
 
-			<img src="./images/grid.gif" width=512px />
+			<div class="image-container">
+				<img src="./images/grid.gif" width=512px />
+				<em>Example videos from the CO3D dataset. Taken from the CO3D repo. </em>
+			</div>
 			<br><br>
 
 			We chose the CO3D dataset for training our modified DINO model because it provides
@@ -538,7 +250,7 @@
 			between adjacent frames are minimal. Thus, we downsampled each sequence to 10 evenly spaced frames.
 			Note that when training, we ignore the object labels of the sequences.<br><br>
 
-			<h2 id="datasets_cifar">CIFAR-100</h2>
+			<h3 id="datasets_cifar">CIFAR-100</h3>
 
 			While testing on a held-out portion of the CO3D dataset is useful for assessing
 			in-distribution performance, it has limitations. The CO3D test set shares the same 51 object categories
@@ -553,16 +265,11 @@
 			making it a useful benchmark for evaluating how well learned representations transfer to
 			out-of-distribution visual inputs.<br><br>
 		</div>
-		<div class="margin-right-block" style="transform: translate(0%, -300%);">
-			Example videos from the CO3D dataset. Taken from the CO3D repo.
-		</div>
 	</div>
 
 	<div class="content-margin-container" id="methods">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Methods</h1>
+			<h2>Methods</h2>
 
 			We trained DINO models using three different types of data augmentations: <code>view</code>,
 			<code>crop</code>,
@@ -601,15 +308,11 @@
 					embedding.</li>
 			</ul>
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container" id="evaluation">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Evaluation</h1>
+			<h2>Evaluation</h2>
 			To assess the quality of the learned image representations, we conducted two main types of evaluation:
 			k-Nearest Neighbors (k-NN) classification and linear probing. Both evaluations were done on both
 			the CO3D and CIFAR-100 datasets. For CO3D, we randomly sample 1 of the 10 images in each sequence
@@ -622,7 +325,7 @@
 			(without any fine-tuning) and their effectiveness when adapted to downstream
 			classification tasks with minimal supervision.<br><br>
 
-			<h2 id="evaluation_knn">k-Nearest Neighbors</h2>
+			<h3 id="evaluation_knn">k-Nearest Neighbors</h3>
 			The k-NN classifier provides a non-parametric way to evaluate how well the embeddings
 			represent the semantic meaning of an image. It requires no additional training, and thus,
 			directly measures how well the learned features cluster semantically similar examples.<br><br>
@@ -640,14 +343,10 @@
 			and Top-5 accuracy, which measures whether the correct label is within the five most confidently predicted
 			classes.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
-		<div class="main-content-block">
+		<div class="main-content-block image-container">
 			<table style="margin: 0 auto; width:80%; border-collapse: collapse; border: 1px solid #ddd;">
 				<thead>
 					<tr style="background-color: #f8f8f8;">
@@ -744,28 +443,20 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		<div class="margin-right-block">
-			Table 1: k-NN evaluation on CO3D (Acc @1 / Acc @5)
+			<em>Table 1: k-NN evaluation on CO3D (Acc @1 / Acc @5)</em>
 		</div>
 	</div>
 
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			The results indicate that viewpoint-based augmentations consistently outperform standard crop-based
 			augmentations. This is especially evident for the <code>vit_small</code> models. The hybrid augmentations
 			sometimes
 			perform slightly better than the crop-based augmentations.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
-		<div class="main-content-block">
+		<div class="main-content-block image-container">
 			<table style="margin: 0 auto; width:80%; border-collapse: collapse; border: 1px solid #ddd;">
 				<thead>
 					<tr style="background-color: #f8f8f8;">
@@ -862,20 +553,16 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		<div class="margin-right-block">
-			Table 2: k-NN evaluation on CIFAR-100 (Acc @1 / Acc @5)
+			<em>Table 2: k-NN evaluation on CIFAR-100 (Acc @1 / Acc @5)</em>
 		</div>
 	</div>
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			Despite being trained on CO3D, models trained with viewpoint augmentations achieved better generalization on
 			CIFAR-100 than those trained with cropping or both. This suggests that viewpoint-based SSL can capture more
 			semantically meaningful and robust features that generalize in other cases too.<br><br>
 
-			<h2 id="evaluation_linear">Linear probe</h2>
+			<h3 id="evaluation_linear">Linear probe</h3>
 
 			Linear probing is another common benchmark used to evaluate learned representations. The core idea is that a
 			strong embedding space should support simple, downstream classifiers. In this setup, we freeze the backbone
@@ -885,13 +572,9 @@
 			representation should allow a simple linear model to achieve high accuracy on downstream classification
 			tasks.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
-		<div class="main-content-block">
+		<div class="main-content-block image-container">
 			<table style="margin: 0 auto; width: 40%; border-collapse: collapse; border: 1px solid #ddd;">
 				<thead>
 					<tr style="background-color: #f8f8f8;">
@@ -937,28 +620,20 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		<div class="margin-right-block">
-			Table 3: Linear probe evaluation on CO3D (Acc @1 / Acc @5)
+			<em>Table 3: Linear probe evaluation on CO3D (Acc @1 / Acc @5)</em>
 		</div>
 	</div>
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			Once again, the <code>view</code>-based training strategy produces the strongest performance across both
 			architectures.
 			In the CO3D results, it has the highest Top-1 and Top-5 accuracy, outperforming the <code>crop</code> and
 			<code>both</code>
-			settings.<br><br>
-		</div>
-		<div class="margin-right-block">
+			settings.
 		</div>
 	</div>
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
-		<div class="main-content-block">
+		<div class="main-content-block image-container">
 			<table style="margin: 0 auto; width: 40%; border-collapse: collapse; border: 1px solid #ddd;">
 				<thead>
 					<tr style="background-color: #f8f8f8;">
@@ -1004,14 +679,10 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		<div class="margin-right-block">
-			Table 4: Linear probe evaluation on CIFAR-100 (Acc @1 / Acc @5)
+			<em>Table 4: Linear probe evaluation on CIFAR-100 (Acc @1 / Acc @5)</em>
 		</div>
 	</div>
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			On CIFAR-100, we observe a similar trend. The <code>view</code>-based models perform best, especially for
 			the
@@ -1028,44 +699,32 @@
 			improvements remain effective across datasets with different characteristics, indicating that the model
 			captures transferable, domain-agnostic features.<br><br>
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container" id="visualizations">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Visualizations</h1>
+			<h2>Visualizations</h2>
 			In this section, we visualize the attention maps of the <code>&lt;CLS&gt;</code> token of the
 			models with the <code>vit_small</code> architecture trained with the three different methods.
 			We sampled a view representative images from the CO3D dataset and visualize the attention maps
 			shown below.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<img src="images/attention_maps.png" alt="CLS attention map" style="width: 50%; height: auto;">
-		</div>
-		<div class="margin-right-block">
-			Attention maps of the <code>&lt;CLS&gt;</code> token for a bike, a carrot, a stop sign,
+			<div class="image-container">
+				<img src="images/attention_maps.png" alt="CLS attention map" style="width: 50%; height: auto;">
+				<em>Attention maps of the <code>&lt;CLS&gt;</code> token for a bike, a carrot, a stop sign,
 			and a toy plane. The left column is trained with the <code>crop</code> strategy, the middle
 			column is trained with the <code>both</code> strategy, and the right column is trained with the
-			<code>view</code> strategy.<br><br>
-
-			We selected the attention head that qualitatively appeared to segment the object most effectively,
-			out of the six possible options per model.
+			<code>view</code> strategy. We selected the attention head that qualitatively appeared to segment the object most effectively,
+			out of the six possible options per model.</em>
+			</div>
 		</div>
 	</div>
 
 	<div class="content-margin-container">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			It isn't immediately clear which model's attention maps perform the best. For example, the <code>crop</code>
 			strategy identifies the bike and toy plane rather well, but it tends to capture a lot more background noise
@@ -1076,15 +735,11 @@
 			model attends to background noise far more than the <code>view</code> model, which is very focused on the
 			chair.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container" id="conclusion">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Conclusion</h1>
+			<h2>Conclusion</h2>
 			Our evaluations indicate that explicitly leveraging 3D viewpoint variations in SSL improves model
 			performance
 			on downstream evaluation tasks, such as k-NN and linear probe classification. Across all evaluations,
@@ -1095,16 +750,12 @@
 			augmentations, shows inconsistent benefits—possibly because combining viewpoint changes with random cropping
 			introduces too much variability or misalignment, which can dilute the useful learning signal.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 
 	<div class="content-margin-container" id="limitations_future_work">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
-			<h1>Limitations and future work</h1>
+			<h2>Limitations and future work</h2>
 			Despite promising results, this work comes with several limitations. First, our models were trained
 			on a dataset with only 51 object categories, limiting the diversity of learned features.
 			Second, due to limited compute, we only experimented with two model scales and did not tune
@@ -1132,16 +783,12 @@
 			locations. This approach could significantly mitigate data bottlenecks and scale viewpoint-based SSL
 			effectively to broader, more diverse visual domains.
 		</div>
-		<div class="margin-right-block">
-		</div>
 	</div>
 
 	<div class="content-margin-container" id="citations">
-		<div class="margin-left-block">
-		</div>
 		<div class="main-content-block">
 			<div class='citation' id="references" style="height:auto"><br>
-				<h2>References</h2>
+				<h3>References</h3>
 				<a id="ref_1"></a>[1] M. Caron, H. Touvron, I. Misra, H. Jégou, J. Mairal, P. Bojanowski, and A. Joulin,
 				"Emerging properties in self-supervised vision transformers," in Proc. IEEE/CVF Int. Conf. Computer
 				Vision (ICCV), Oct. 2021, pp. 9650-9660.<br><br>
@@ -1185,9 +832,6 @@
 				Video," in Proc. IEEE Int. Conf. Robotics and Automation (ICRA), Brisbane, Australia, May 2018, pp.
 				1134-1141.<br><br>
 			</div>
-		</div>
-		<div class="margin-right-block">
-			<!-- margin notes for reference block here -->
 		</div>
 	</div>
 

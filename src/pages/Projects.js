@@ -8,7 +8,7 @@ function Projects() {
       description: "dino.md",
       skills: ["Python", "PyTorch"],
       links: [
-        { text: "Blog", url: "/projects/dino/index.html" }
+        { text: "Blog", url: "/projects/dino/dino.html" }
       ]
     },
     {

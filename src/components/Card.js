@@ -44,8 +44,6 @@ function Card({ title, description, skills = [], links = [] }) {
               {index > 0 && <span className="mx-2 text-gray-400">•</span>}
               <a 
                 href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
                 className="card-link"
               >
                 {link.text}
