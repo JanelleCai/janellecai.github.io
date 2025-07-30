@@ -4,23 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Learning to Learn Across Domains</title>
-    <link rel="stylesheet" href="styles/style.css" />
-    <script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
-    </script>
+    <link rel="stylesheet" href="../style.css" />
     <script>
-        MathJax = {
-            tex: {
-                inlineMath: [['\\(', '\\)'], ['$', '$']],
-                displayMath: [['$$', '$$']],
-                macros: {
-                    argmin: ["\\mathop{\\operatorname{argmin}}\\limits", 0],
-                }
+        window.MathJax = {
+        tex: {
+            inlineMath: [['\\(','\\)'], ['$', '$']],
+            displayMath: [['$$','$$']],
+            macros: {
+            argmin: ["\\operatorname*{argmin}",0]
             }
+        }
         };
     </script>
+
+    <script defer
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
+	</script>
 </head>
 <body>
+<a href="/projects" class="back-button">← Back to Projects</a>
+
 <h1>Learning to Learn Across Domains</h1>
 <div class="header-container">
     <div>Janelle Cai and Adam Zweiger</div>
