@@ -24,14 +24,15 @@ function Home() {
           <h1 className="page-header">About Me</h1>
           <div className="text-base space-y-2">
             <p>
-              Hello! I'm a sophomore at MIT studying computer science. Some of my current interests 
+              Hello! I'm a rising junior at MIT studying computer science. Some of my current interests 
               are machine learning and robotics, but I'm always excited to learn new things. I'm 
               passionate about applying my knowledge to practical problems to make an impact. 
             </p>
             <p>
-              In the past, I researched model routing and improved LLM agents at{" "}
+              This summer, I am working on infrastructure at {" "} <Link text="OpenAI" link="https://www.openai.com"/>. In the past, I worked on video generation 
+              models at {" "} <Link text="Pika" link="https://pika.art"/>, and I researched model routing and improved LLM agents at{" "}
               <Link text="Ema" link="https://www.ema.co/"/>. 
-              I worked on research on how NLP can be applied to climate policy in order to better 
+              I've also worked on research on how NLP can be applied to climate policy in order to better 
               understand progress toward climate goals. 
               At MIT, I work on autonomous navigation and perception for {" "}
               <Link text="Arcturus" link="https://arcturus.mit.edu.com/"/>,
